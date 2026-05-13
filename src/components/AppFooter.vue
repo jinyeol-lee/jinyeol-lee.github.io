@@ -6,6 +6,6 @@ const year = new Date().getFullYear()
   <footer
     class="border-t border-surface-200 py-6 text-center text-sm text-surface-500 dark:border-surface-800 dark:text-surface-400"
   >
-    © {{ year }} Portfolio. Built with Vue, PrimeVue & Tailwind.
+    © {{ year }} Lee Jinyeol. Built with Vue, PrimeVue & Tailwind.
   </footer>
 </template>

@@ -1,22 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
-import Button from 'primevue/button'
-import Message from 'primevue/message'
 
-const name = ref('')
-const email = ref('')
-const message = ref('')
-const submitted = ref(false)
-
-function onSubmit() {
-  submitted.value = true
-  name.value = ''
-  email.value = ''
-  message.value = ''
+interface ContactItem {
+  icon: string
+  label: string
+  value: string
+  href: string
 }
+
+const contacts: ContactItem[] = [
+  {
+    icon: 'pi pi-envelope',
+    label: 'Email',
+    value: 'wlsduf17@gmail.com',
+    href: 'mailto:wlsduf17@gmail.com',
+  },
+  {
+    icon: 'pi pi-phone',
+    label: 'Phone',
+    value: '010-3126-7530',
+    href: 'tel:+821031267530',
+  },
+  {
+    icon: 'pi pi-github',
+    label: 'GitHub',
+    value: 'github.com/jinyeol-lee',
+    href: 'https://github.com/jinyeol-lee',
+  },
+]
 </script>
 
 <template>
@@ -26,27 +37,30 @@ function onSubmit() {
       궁금한 점이나 협업 제안이 있다면 편하게 연락 주세요.
     </p>
 
-    <Message v-if="submitted" severity="success" class="mb-6">
-      메시지가 전송되었습니다. 감사합니다!
-    </Message>
-
     <Card>
       <template #content>
-        <form class="flex flex-col gap-4" @submit.prevent="onSubmit">
-          <div class="flex flex-col gap-2">
-            <label for="name" class="text-sm font-medium">이름</label>
-            <InputText id="name" v-model="name" required />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="email" class="text-sm font-medium">이메일</label>
-            <InputText id="email" v-model="email" type="email" required />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="message" class="text-sm font-medium">메시지</label>
-            <Textarea id="message" v-model="message" rows="5" required />
-          </div>
-          <Button type="submit" label="보내기" icon="pi pi-send" />
-        </form>
+        <ul class="flex flex-col divide-y divide-surface-200 dark:divide-surface-800">
+          <li v-for="item in contacts" :key="item.label">
+            <a
+              :href="item.href"
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-4 py-4 transition-colors hover:bg-surface-50 dark:hover:bg-surface-800/50"
+            >
+              <span
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-50 text-primary dark:bg-primary-950/40"
+              >
+                <i :class="item.icon" aria-hidden="true" />
+              </span>
+              <span class="flex flex-col">
+                <span class="text-xs uppercase tracking-wider text-surface-500 dark:text-surface-400">
+                  {{ item.label }}
+                </span>
+                <span class="text-surface-900 dark:text-surface-0">{{ item.value }}</span>
+              </span>
+            </a>
+          </li>
+        </ul>
       </template>
     </Card>
   </section>
