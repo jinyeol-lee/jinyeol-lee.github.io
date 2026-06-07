@@ -160,8 +160,43 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
               </div>
 
               <div
+                :class="
+                  group.items.length > 1
+                    ? 'grid gap-3 sm:grid-cols-2'
+                    : ''
+                "
+              >
+                <figure v-for="(item, idx) in group.items" :key="idx">
+                  <div
+                    class="overflow-hidden rounded-md border border-surface-200 bg-surface-50 dark:border-surface-800 dark:bg-surface-900"
+                    :class="group.items.length > 1 ? 'aspect-video' : ''"
+                  >
+                    <img
+                      :src="item.src"
+                      :alt="item.alt"
+                      :class="[
+                        'block w-full',
+                        group.items.length > 1
+                          ? (item.fit === 'contain'
+                              ? 'h-full object-contain'
+                              : 'h-full object-cover object-top')
+                          : '',
+                      ]"
+                      loading="lazy"
+                    />
+                  </div>
+                  <figcaption
+                    v-if="item.caption"
+                    class="mt-2 text-center text-xs text-surface-500 dark:text-surface-400"
+                  >
+                    {{ item.caption }}
+                  </figcaption>
+                </figure>
+              </div>
+
+              <div
                 v-if="gIdx === 0 && project.techRationale"
-                class="mb-5 overflow-hidden rounded-lg border border-primary-200 bg-primary-50/40 dark:border-primary-800 dark:bg-primary-950/20"
+                class="mt-5 overflow-hidden rounded-lg border border-primary-200 bg-primary-50/40 dark:border-primary-800 dark:bg-primary-950/20"
               >
                 <div
                   class="flex items-center gap-2 border-b border-primary-200 bg-primary-50/60 px-4 py-2.5 dark:border-primary-800 dark:bg-primary-950/30"
@@ -196,40 +231,6 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
                     </li>
                   </ol>
                 </div>
-              </div>
-              <div
-                :class="
-                  group.items.length > 1
-                    ? 'grid gap-3 sm:grid-cols-2'
-                    : ''
-                "
-              >
-                <figure v-for="(item, idx) in group.items" :key="idx">
-                  <div
-                    class="overflow-hidden rounded-md border border-surface-200 bg-surface-50 dark:border-surface-800 dark:bg-surface-900"
-                    :class="group.items.length > 1 ? 'aspect-video' : ''"
-                  >
-                    <img
-                      :src="item.src"
-                      :alt="item.alt"
-                      :class="[
-                        'block w-full',
-                        group.items.length > 1
-                          ? (item.fit === 'contain'
-                              ? 'h-full object-contain'
-                              : 'h-full object-cover object-top')
-                          : '',
-                      ]"
-                      loading="lazy"
-                    />
-                  </div>
-                  <figcaption
-                    v-if="item.caption"
-                    class="mt-2 text-center text-xs text-surface-500 dark:text-surface-400"
-                  >
-                    {{ item.caption }}
-                  </figcaption>
-                </figure>
               </div>
             </section>
           </div>

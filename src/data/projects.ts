@@ -36,7 +36,7 @@ export const years: Record<YearKey, YearMeta> = {
     showcase: {
       title: 'Dashboard Showcase',
       description:
-        '1년차에 구축한 TimescaleDB + Grafana 기반 위에서 재직 기간 동안 누적·확장된 제조 현장 맞춤형 실시간 대시보드입니다.',
+        '1년차에 구축한 TimescaleDB + Grafana 기반 위에서 재직 기간 동안 누적·확장된 제조 현장 맞춤형 실시간 대시보드입니다. Grafana 기본 차트 외에 다양한 플러그인을 활용했으며, 특히 ECharts.js 를 활용해 커스텀 차트를 직접 구성하여 제조 현장 요구에 맞는 시각화를 제공했습니다.',
       items: Array.from({ length: 6 }, (_, i) => {
         const n = String(i + 1).padStart(2, '0')
         return {
@@ -248,7 +248,15 @@ WHERE compression_status = 'Compressed';`,
     title: '시스템 인프라 고도화 및 모니터링, 알림 구축',
     period: '2024.08 ~ 2025.05',
     year: 2,
-    tags: ['Grafana', 'Prometheus', 'PostgreSQL', 'Streaming Replication'],
+    tags: [
+      'PostgreSQL',
+      'TimescaleDB',
+      'Streaming Replication',
+      'Grafana',
+      'Grafana Alloy',
+      'Prometheus',
+      'VictoriaMetrics',
+    ],
     outcome:
       '메인 DB 서버의 CPU 부하 및 네트워크 트래픽 최적화로 인프라 비용 감소, 현장 Edge 장비 다운 장애 사전 예방',
     roles: [
@@ -256,6 +264,26 @@ WHERE compression_status = 'Compressed';`,
       '실시간 관제 대시보드 (Grafana) 의 데이터 소스를 Slave DB 로 이전 — Master DB CPU 사용량 안정화 (평균 25%) 및 네트워크 아웃바운드 트래픽 초과 비용 개선',
       '현장 PC 에 Grafana Alloy 에이전트를 도입하여 호스트 메트릭 수집 및 임계치 알림 체계를 구축, 메모리 고갈 전 사전 조치로 장비 다운 원천 예방',
     ],
+    media: [
+      {
+        label: '아키텍처',
+        src: `${import.meta.env.BASE_URL}architectures/infra-monitoring.svg`,
+        alt: '스트리밍 복제 기반 IoT 데이터 · 모니터링 아키텍처',
+        description: [
+          '클라우드의 TimescaleDB Primary 에 적재되는 IoT 시계열 데이터를 사내 내부 서버의 Replica 로 Streaming Replication 하고, Grafana 대시보드의 데이터 소스를 Replica 로 격리해 Master 의 부하와 네트워크 아웃바운드 트래픽을 분리했습니다. 동시에 현장 엣지 서버와 클라우드 DB 양쪽에 Grafana Alloy + Prometheus 를 띄워 호스트·DB 메트릭을 VictoriaMetrics 로 수집해 통합 모니터링·알림 체계를 구성했습니다.',
+        ],
+      },
+    ],
+    techRationale: {
+      question: 'Streaming Replication 을 선택한 이유',
+      preface:
+        'Master DB 의 CPU 과부하(99%) 와 클라우드 아웃바운드 네트워크 비용을 동시에 해결하려면 Grafana 의 읽기 트래픽을 Master 에서 분리해야 했습니다. Logical Replication · pgpool · Patroni HA 등 후보를 검토한 끝에 Streaming Replication 을 채택했습니다.',
+      reasons: [
+        'PostgreSQL 네이티브 기능이라 별도 컴포넌트 도입 없이 빠르게 적용할 수 있었고, 운영 복잡도가 낮았습니다.',
+        '물리 복제(byte-level) 방식이라 TimescaleDB 의 하이퍼테이블 · Continuous Aggregate · 확장 객체가 모두 그대로 복제되어 추가 호환성 검증이 필요 없었습니다.',
+        'Replica 를 사내 내부 서버에 배치해 Grafana 읽기 트래픽을 사내망에서 처리하도록 분리함으로써 Master CPU 부담과 클라우드 아웃바운드 트래픽 비용을 동시에 절감할 수 있었습니다.',
+      ],
+    },
   },
   {
     slug: 'pipeline-cbam',
