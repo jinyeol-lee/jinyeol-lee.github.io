@@ -1,0 +1,161 @@
+<svg viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg" font-family="'Pretendard','Noto Sans KR','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#5b6470"/>
+    </marker>
+    <marker id="arrowAccent" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#E8743B"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1c2733" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="760" fill="#FBFCFE"/>
+
+  <!-- Title -->
+  <text x="640" y="44" text-anchor="middle" font-size="27" font-weight="700" fill="#1c2733">산업 IoT 데이터 수집 · 시각화 아키텍처</text>
+  <text x="640" y="70" text-anchor="middle" font-size="14" fill="#7a8694">Industrial IoT Data Collection &amp; Visualization Pipeline</text>
+
+  <!-- Zone bands -->
+  <rect x="30"   y="96" width="330" height="610" rx="16" fill="#EAF4FB" stroke="#B6D9F0" stroke-width="1.5"/>
+  <rect x="380"  y="96" width="600" height="610" rx="16" fill="#F1ECFA" stroke="#CDBCEC" stroke-width="1.5"/>
+  <rect x="1000" y="96" width="250" height="610" rx="16" fill="#EAF7EF" stroke="#BBE3CB" stroke-width="1.5"/>
+
+  <!-- Zone titles -->
+  <text x="195"  y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#2E6B96">현장 · On-Premise / Edge</text>
+  <text x="680"  y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#6A4D9E">클라우드 · Cloud</text>
+  <text x="1125" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#2C8C5A">사용자 · User</text>
+
+  <!-- ============ Zone 1: Field / Edge ============ -->
+  <!-- IoT -->
+  <g filter="url(#shadow)"><rect x="50" y="178" width="140" height="104" rx="11" fill="#2E86C1"/></g>
+  <g transform="translate(108,192)" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round">
+    <circle cx="12" cy="19" r="2" fill="#fff" stroke="none"/>
+    <path d="M6.5,15 a8,8 0 0 1 11,0"/>
+    <path d="M3,11.5 a12.5,12.5 0 0 1 18,0"/>
+  </g>
+  <text x="120" y="248" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">IoT 센서</text>
+  <text x="120" y="267" text-anchor="middle" font-size="11.5" fill="#dcebf7">Sensors / Devices</text>
+
+  <!-- PLC -->
+  <g filter="url(#shadow)"><rect x="210" y="178" width="130" height="104" rx="11" fill="#1F6FB0"/></g>
+  <g transform="translate(263,192)" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round">
+    <rect x="7" y="7" width="10" height="10" rx="1.5"/>
+    <line x1="10" y1="3.5" x2="10" y2="7"/><line x1="14" y1="3.5" x2="14" y2="7"/>
+    <line x1="10" y1="17" x2="10" y2="20.5"/><line x1="14" y1="17" x2="14" y2="20.5"/>
+    <line x1="3.5" y1="10" x2="7" y2="10"/><line x1="3.5" y1="14" x2="7" y2="14"/>
+    <line x1="17" y1="10" x2="20.5" y2="10"/><line x1="17" y1="14" x2="20.5" y2="14"/>
+  </g>
+  <text x="275" y="248" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">PLC 장비</text>
+  <text x="275" y="267" text-anchor="middle" font-size="11.5" fill="#dcebf7">Controllers</text>
+
+  <!-- Edge Server -->
+  <g filter="url(#shadow)"><rect x="70" y="400" width="260" height="112" rx="12" fill="#117A8B"/></g>
+  <g transform="translate(187,415)" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round">
+    <rect x="3" y="4" width="20" height="7" rx="1.5"/>
+    <rect x="3" y="14" width="20" height="7" rx="1.5"/>
+    <circle cx="7" cy="7.5" r="1.1" fill="#fff" stroke="none"/>
+    <circle cx="7" cy="17.5" r="1.1" fill="#fff" stroke="none"/>
+  </g>
+  <text x="200" y="461" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">현장 엣지 서버</text>
+  <text x="200" y="480" text-anchor="middle" font-size="11" fill="#d6eef1">Edge Server</text>
+  <text x="200" y="500" text-anchor="middle" font-size="11.5" font-weight="600" fill="#bfe9ee">수집 · OPC UA 프로토콜 변환</text>
+
+  <!-- Protocol label on IoT/PLC -> Edge -->
+  <rect x="142" y="333" width="116" height="24" rx="12" fill="#ffffff" stroke="#9CC9E8" stroke-width="1.2"/>
+  <text x="200" y="349" text-anchor="middle" font-size="10.5" font-weight="600" fill="#2E6B96">RS-232 · 485 / LAN</text>
+
+  <!-- ============ Zone 2: Cloud ============ -->
+  <!-- TimescaleDB (with feature chips) -->
+  <g filter="url(#shadow)"><rect x="410" y="150" width="250" height="180" rx="12" fill="#2D9C6F"/></g>
+  <g transform="translate(428,162)" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round">
+    <ellipse cx="10" cy="5" rx="7.5" ry="2.8"/>
+    <path d="M2.5,5 v11 a7.5,2.8 0 0 0 15,0 v-11"/>
+    <path d="M2.5,10.5 a7.5,2.8 0 0 0 15,0"/>
+    <circle cx="16.5" cy="16.5" r="4" fill="#2D9C6F"/>
+    <path d="M16.5,14.2 v2.3 l1.6,1.1"/>
+  </g>
+  <text x="462" y="178" font-size="16" font-weight="700" fill="#fff">TimescaleDB</text>
+  <text x="462" y="196" font-size="10.5" fill="#d8f1e6">시계열 데이터 저장 · Cloud</text>
+  <!-- feature chips -->
+  <rect x="424" y="208" width="222" height="24" rx="7" fill="#ffffff" fill-opacity="0.16"/>
+  <text x="535" y="224" text-anchor="middle" font-size="10.5" font-weight="600" fill="#fff">Hyperfunctions · 하이퍼함수</text>
+  <rect x="424" y="237" width="222" height="24" rx="7" fill="#ffffff" fill-opacity="0.16"/>
+  <text x="535" y="253" text-anchor="middle" font-size="10.5" font-weight="600" fill="#fff">Continuous Aggregates · CAGG</text>
+  <rect x="424" y="266" width="222" height="24" rx="7" fill="#ffffff" fill-opacity="0.16"/>
+  <text x="535" y="282" text-anchor="middle" font-size="10.5" font-weight="600" fill="#fff">Compression · 압축 정책</text>
+  <rect x="424" y="295" width="222" height="24" rx="7" fill="#ffffff" fill-opacity="0.16"/>
+  <text x="535" y="311" text-anchor="middle" font-size="10.5" font-weight="600" fill="#fff">Partitioning · 파티셔닝 정책</text>
+
+  <!-- MariaDB -->
+  <g filter="url(#shadow)"><rect x="410" y="346" width="250" height="78" rx="12" fill="#1B7A8C"/></g>
+  <g transform="translate(428,373)" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round">
+    <ellipse cx="11" cy="5" rx="8" ry="3"/>
+    <path d="M3,5 v12 a8,3 0 0 0 16,0 v-12"/>
+    <path d="M3,11 a8,3 0 0 0 16,0"/>
+  </g>
+  <text x="470" y="382" font-size="15" font-weight="700" fill="#fff">MariaDB</text>
+  <text x="470" y="402" font-size="11.5" fill="#d4ecf0">사내 MES팀 구축</text>
+
+  <!-- External MES -->
+  <g filter="url(#shadow)"><rect x="410" y="440" width="250" height="78" rx="12" fill="#E08E0B"/></g>
+  <g transform="translate(428,467)" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8,6 L3,12 L8,18"/>
+    <path d="M14,6 L19,12 L14,18"/>
+    <line x1="12.5" y1="4.5" x2="9.5" y2="19.5"/>
+  </g>
+  <text x="470" y="476" font-size="15" font-weight="700" fill="#fff">외부 MES</text>
+  <text x="470" y="496" font-size="11.5" fill="#fbecd0">External MES · API</text>
+
+  <!-- Grafana -->
+  <g filter="url(#shadow)"><rect x="730" y="270" width="200" height="150" rx="13" fill="#E8743B"/></g>
+  <g transform="translate(814,296)" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="3,21 3,3"/>
+    <polyline points="3,21 23,21"/>
+    <polyline points="6,16 11,10 15,13 22,5"/>
+    <circle cx="11" cy="10" r="1.4" fill="#fff" stroke="none"/>
+    <circle cx="15" cy="13" r="1.4" fill="#fff" stroke="none"/>
+    <circle cx="22" cy="5" r="1.4" fill="#fff" stroke="none"/>
+  </g>
+  <text x="830" y="356" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">Grafana</text>
+  <text x="830" y="379" text-anchor="middle" font-size="12" fill="#fce0d3">통합 대시보드</text>
+  <text x="830" y="398" text-anchor="middle" font-size="11" fill="#fad2bf">Dashboards &amp; Alerts</text>
+
+  <!-- ============ Zone 3: User ============ -->
+  <g filter="url(#shadow)"><rect x="1025" y="270" width="200" height="150" rx="13" fill="#5D6D7E"/></g>
+  <g transform="translate(1113,298)" fill="#fff">
+    <circle cx="12" cy="8" r="4.8"/>
+    <path d="M3,22 a9,8.5 0 0 1 18,0 z"/>
+  </g>
+  <text x="1125" y="356" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">사용자</text>
+  <text x="1125" y="379" text-anchor="middle" font-size="12" fill="#dfe4ea">Web Browser</text>
+  <text x="1125" y="398" text-anchor="middle" font-size="11" fill="#cdd4dc">모니터링 · 분석</text>
+
+  <!-- ============ Arrows ============ -->
+  <path d="M120,282 C120,335 165,370 168,398" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M275,282 C275,335 235,370 232,398" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+  <!-- Edge -> TimescaleDB -->
+  <path d="M330,432 C374,424 374,255 408,240" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <text x="372" y="338" text-anchor="middle" font-size="11.5" fill="#56606c" transform="rotate(-78 372 338)">데이터 적재 (write)</text>
+
+  <!-- TimescaleDB -> Grafana -->
+  <path d="M660,240 C700,252 700,300 728,312" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
+  <text x="703" y="270" text-anchor="middle" font-size="11" fill="#c5612e">Query</text>
+
+  <!-- MariaDB -> Grafana -->
+  <path d="M660,385 C700,382 700,355 728,347" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
+  <text x="696" y="360" text-anchor="middle" font-size="11" fill="#c5612e">SQL</text>
+
+  <!-- External MES -> Grafana -->
+  <path d="M660,479 C702,470 700,400 728,384" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
+  <text x="703" y="438" text-anchor="middle" font-size="11" fill="#c5612e">API</text>
+
+  <!-- Grafana -> User -->
+  <path d="M930,345 C972,345 985,345 1023,345" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <text x="978" y="338" text-anchor="middle" font-size="11" fill="#56606c">대시보드 제공</text>
+
+  <!-- Footer caption -->
+  <text x="640" y="734" text-anchor="middle" font-size="11.5" fill="#9aa4b1">IoT·PLC (RS-232/485·LAN) → 엣지 서버(OPC UA 변환) → TimescaleDB(하이퍼함수·CAGG·압축·파티셔닝) → MES 연동(API/MariaDB) → Grafana → 사용자</text>
+</svg>

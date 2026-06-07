@@ -15,9 +15,37 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/projects',
-    name: 'projects',
-    component: () => import('@/views/ProjectsView.vue'),
+    component: () => import('@/views/projects/ProjectsLayout.vue'),
     meta: { title: 'Projects' },
+    children: [
+      {
+        path: '',
+        name: 'projects',
+        component: () => import('@/views/projects/ProjectsOverview.vue'),
+        meta: { title: 'Projects' },
+      },
+      {
+        path: 'year-1',
+        name: 'projects-year-1',
+        component: () => import('@/views/projects/YearProjectsView.vue'),
+        props: { year: 1 },
+        meta: { title: '1년차' },
+      },
+      {
+        path: 'year-2',
+        name: 'projects-year-2',
+        component: () => import('@/views/projects/YearProjectsView.vue'),
+        props: { year: 2 },
+        meta: { title: '2년차' },
+      },
+      {
+        path: 'year-3',
+        name: 'projects-year-3',
+        component: () => import('@/views/projects/YearProjectsView.vue'),
+        props: { year: 3 },
+        meta: { title: '3년차' },
+      },
+    ],
   },
   {
     path: '/contact',

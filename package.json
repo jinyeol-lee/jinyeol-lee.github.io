@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify/vue": "^5.0.1",
     "@primeuix/themes": "^2.0.3",
+    "highlight.js": "^11.11.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.5",
     "vue": "^3.5.34",

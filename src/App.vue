@@ -24,7 +24,7 @@ watch(isDark, (val) => {
     <main class="flex-1">
       <RouterView v-slot="{ Component, route }">
         <Transition name="fade" mode="out-in">
-          <component :is="Component" :key="route.fullPath" />
+          <component :is="Component" :key="route.matched[0]?.path" />
         </Transition>
       </RouterView>
     </main>

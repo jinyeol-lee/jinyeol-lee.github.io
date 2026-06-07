@@ -14,6 +14,8 @@ const links = [
   { to: '/projects', label: 'Projects' },
   { to: '/contact', label: 'Contact' },
 ]
+
+const resumeUrl = `${import.meta.env.BASE_URL}resume.pdf`
 </script>
 
 <template>
@@ -44,6 +46,17 @@ const links = [
             @click="navigate"
           />
         </RouterLink>
+        <Button
+          as="a"
+          :href="resumeUrl"
+          target="_blank"
+          rel="noopener"
+          label="Resume"
+          icon="pi pi-file-pdf"
+          severity="contrast"
+          size="small"
+          class="ml-1"
+        />
         <Button
           :icon="isDark ? 'pi pi-sun' : 'pi pi-moon'"
           variant="text"
@@ -88,6 +101,16 @@ const links = [
       >
         {{ link.label }}
       </RouterLink>
+      <a
+        :href="resumeUrl"
+        target="_blank"
+        rel="noopener"
+        class="flex items-center gap-2 rounded px-3 py-2 text-surface-700 hover:bg-surface-100 dark:text-surface-200 dark:hover:bg-surface-800"
+        @click="mobileOpen = false"
+      >
+        <i class="pi pi-file-pdf" aria-hidden="true" />
+        <span>Resume</span>
+      </a>
     </nav>
   </header>
 </template>
