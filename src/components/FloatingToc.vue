@@ -54,7 +54,7 @@ function scrollTo(id: string) {
 
 <template>
   <aside
-    class="pointer-events-none fixed top-24 right-6 z-40 hidden w-52 2xl:block"
+    class="pointer-events-none fixed top-[40%] right-[calc(25vw-22.5rem)] z-40 hidden w-52 max-h-[calc(100vh-8rem)] -translate-y-1/2 overflow-y-auto 2xl:block"
     aria-label="목차"
   >
     <div class="pointer-events-auto">

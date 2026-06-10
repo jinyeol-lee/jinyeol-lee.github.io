@@ -17,8 +17,11 @@ const SKILL_ICON_MAP: Record<string, string> = {
   // Database
   PostgreSQL: 'logos:postgresql',
   TimescaleDB: 'simple-icons:timescale',
+  PgBouncer: 'mdi:database-arrow-right',
   SQL: 'mdi:database',
   'Streaming Replication': 'mdi:database-sync',
+  VictoriaMetrics: 'mdi:chart-line-variant',
+  'Grafana Alloy': 'logos:grafana',
 
   // DevOps / Infra
   Docker: 'logos:docker-icon',

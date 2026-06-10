@@ -7,6 +7,8 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import typescript from 'highlight.js/lib/languages/typescript'
 import java from 'highlight.js/lib/languages/java'
 import kotlin from 'highlight.js/lib/languages/kotlin'
+import ini from 'highlight.js/lib/languages/ini'
+import nginx from 'highlight.js/lib/languages/nginx'
 
 hljs.registerLanguage('sql', sql)
 hljs.registerLanguage('python', python)
@@ -14,6 +16,10 @@ hljs.registerLanguage('yaml', yaml)
 hljs.registerLanguage('typescript', typescript)
 hljs.registerLanguage('java', java)
 hljs.registerLanguage('kotlin', kotlin)
+hljs.registerLanguage('ini', ini)
+hljs.registerLanguage('nginx', nginx)
+// 'river' (Grafana Alloy) → nginx 문법이 시각적으로 가장 가까워 alias 로 등록
+hljs.registerAliases(['river'], { languageName: 'nginx' })
 
 const props = defineProps<{
   title?: string

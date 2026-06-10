@@ -68,8 +68,18 @@ export const years: Record<YearKey, YearMeta> = {
 export interface CodeSnippet {
   title: string
   description?: string
-  language: 'sql' | 'python' | 'yaml' | 'typescript' | 'java' | 'kotlin'
+  language: 'sql' | 'python' | 'yaml' | 'typescript' | 'java' | 'kotlin' | 'ini' | 'river'
   code: string
+}
+
+export interface CodeSection {
+  slug: string
+  title: string
+  icon?: string
+  headline?: string
+  note?: string[]
+  snippets: CodeSnippet[]
+  media?: MediaItem[]
 }
 
 export interface TechRationale {
@@ -90,7 +100,8 @@ export interface Project {
   snippets?: CodeSnippet[]
   snippetsHeadline?: string
   snippetsNote?: string[]
-  techRationale?: TechRationale
+  codeSections?: CodeSection[]
+  techRationale?: TechRationale | TechRationale[]
 }
 
 export const projects: Project[] = [
@@ -127,14 +138,19 @@ export const projects: Project[] = [
         '마스터 데이터·메타정보 테이블과의 JOIN 이 자유로워, 기존 RDBMS 모델링·관계 쿼리 자산을 그대로 살릴 수 있었습니다.',
       ],
     },
-    snippetsHeadline:
-      'LAG(결측 취약) → counter_agg + delta(이상치 취약) → last − first(최종 안정 패턴) 순으로 발전시켰습니다.',
-    snippetsNote: [
-      'LAG 방식은 직전 행이 결측이면 산정이 불가했습니다.',
-      'TimescaleDB Toolkit 의 delta 는 결측 문제를 보완했지만, 누적 카운터 내부 상태에 의존해 스파이크성 이상치 영향이 커졌습니다.',
-      '버킷 양 끝점만 사용하는 last − first 방식이 결측·이상치 모두에 가장 안전했고, 이를 Continuous Aggregate 로 캐스케이드하여 운영에 채택했습니다.',
-    ],
-    snippets: [
+    codeSections: [
+      {
+        slug: 'sql',
+        title: 'TimescaleDB Query',
+        icon: 'pi pi-database',
+        headline:
+          'LAG(결측 취약) → counter_agg + delta(이상치 취약) → last − first(최종 안정 패턴) 순으로 발전시켰습니다.',
+        note: [
+          'LAG 방식은 직전 행이 결측이면 산정이 불가했습니다.',
+          'TimescaleDB Toolkit 의 delta 는 결측 문제를 보완했지만, 누적 카운터 내부 상태에 의존해 스파이크성 이상치 영향이 커졌습니다.',
+          '버킷 양 끝점만 사용하는 last − first 방식이 결측·이상치 모두에 가장 안전했고, 이를 Continuous Aggregate 로 캐스케이드하여 운영에 채택했습니다.',
+        ],
+        snippets: [
       {
         title: 'time_bucket + LAG — 누적 카운터에서 일별 사용량 추출 (Grafana 동적 쿼리)',
         description:
@@ -241,6 +257,8 @@ SELECT
 FROM chunk_compression_stats('tbl_powermeter_reading')
 WHERE compression_status = 'Compressed';`,
       },
+        ],
+      },
     ],
   },
   {
@@ -251,6 +269,7 @@ WHERE compression_status = 'Compressed';`,
     tags: [
       'PostgreSQL',
       'TimescaleDB',
+      'PgBouncer',
       'Streaming Replication',
       'Grafana',
       'Grafana Alloy',
@@ -270,20 +289,166 @@ WHERE compression_status = 'Compressed';`,
         src: `${import.meta.env.BASE_URL}architectures/infra-monitoring.svg`,
         alt: '스트리밍 복제 기반 IoT 데이터 · 모니터링 아키텍처',
         description: [
-          '클라우드의 TimescaleDB Primary 에 적재되는 IoT 시계열 데이터를 사내 내부 서버의 Replica 로 Streaming Replication 하고, Grafana 대시보드의 데이터 소스를 Replica 로 격리해 Master 의 부하와 네트워크 아웃바운드 트래픽을 분리했습니다. 동시에 현장 엣지 서버와 클라우드 DB 양쪽에 Grafana Alloy + Prometheus 를 띄워 호스트·DB 메트릭을 VictoriaMetrics 로 수집해 통합 모니터링·알림 체계를 구성했습니다.',
+          '클라우드의 TimescaleDB Primary 앞단에 PgBouncer 를 두어 다수의 Edge 서버에서 들어오는 커넥션을 풀링·재사용하도록 했고, 적재된 IoT 시계열 데이터를 사내 내부 서버의 Replica 로 Streaming Replication 합니다. Grafana 대시보드의 데이터 소스를 Replica 로 격리해 Master 의 부하와 네트워크 아웃바운드 트래픽을 분리했고, 현장 엣지 서버와 클라우드 DB 양쪽에 Grafana Alloy + Prometheus 를 띄워 호스트·DB 메트릭을 VictoriaMetrics 로 수집해 통합 모니터링·알림 체계를 구성했습니다.',
         ],
       },
     ],
-    techRationale: {
-      question: 'Streaming Replication 을 선택한 이유',
-      preface:
-        'Master DB 의 CPU 과부하(99%) 와 클라우드 아웃바운드 네트워크 비용을 동시에 해결하려면 Grafana 의 읽기 트래픽을 Master 에서 분리해야 했습니다. Logical Replication · pgpool · Patroni HA 등 후보를 검토한 끝에 Streaming Replication 을 채택했습니다.',
-      reasons: [
-        'PostgreSQL 네이티브 기능이라 별도 컴포넌트 도입 없이 빠르게 적용할 수 있었고, 운영 복잡도가 낮았습니다.',
-        '물리 복제(byte-level) 방식이라 TimescaleDB 의 하이퍼테이블 · Continuous Aggregate · 확장 객체가 모두 그대로 복제되어 추가 호환성 검증이 필요 없었습니다.',
-        'Replica 를 사내 내부 서버에 배치해 Grafana 읽기 트래픽을 사내망에서 처리하도록 분리함으로써 Master CPU 부담과 클라우드 아웃바운드 트래픽 비용을 동시에 절감할 수 있었습니다.',
-      ],
-    },
+    techRationale: [
+      {
+        question: 'PgBouncer 를 도입한 이유',
+        preface:
+          '업체 수 증가에 대비해 신규 클라우드 DB 서버를 추가 도입했지만 예상보다 사양이 부족해 CPU 가 100% 까지 치솟는 문제가 발생했습니다. 이를 해소하기 위해 신규 서버를 기존 DB 서버로 이전·통합하는 작업을 진행했고, 이 통합 과정에서 read/write 가 여러 포트로 분산되어 있던 구조를 단일 엔드포인트로 정리하고 다수 Edge 서버의 동시 접속을 안전하게 처리하기 위해 PgBouncer 를 함께 도입했습니다.',
+        reasons: [
+          '여러 포트로 흩어져 있던 read/write 엔드포인트를 PgBouncer 단일 지점으로 통합 — 애플리케이션·Edge 서버가 DB 위치 변화나 포트 분기에 신경 쓰지 않도록 추상화했습니다.',
+          '다수의 Edge 서버에서 동시에 발생하는 커넥션을 풀링·재사용하여 동시 접속 폭증으로 인한 max_connections 소진 문제를 해소했습니다.',
+        ],
+      },
+      {
+        question: 'Streaming Replication 을 선택한 이유',
+        preface:
+          '클라우드 DB 통합 이후에도 Grafana 대시보드가 가져가는 읽기 트래픽이 누적되면서 클라우드 사업자의 아웃바운드 네트워크 계약 기준을 초과해 추가 비용이 발생하기 시작했습니다. 계약 기준 이내로 유지하면서 동시에 Master DB 의 CPU 부담까지 함께 분리하기 위해, 사내 내부 서버에 Replica 를 두고 읽기 트래픽을 사내망에서 처리하도록 전환하기로 팀 내에서 결정했고, 후보로 검토한 Logical Replication · pgpool · Patroni HA 중 Streaming Replication 을 채택했습니다.',
+        reasons: [
+          'PostgreSQL 네이티브 기능이라 별도 컴포넌트 도입 없이 빠르게 적용할 수 있었고, 운영 복잡도가 낮았습니다.',
+          '물리 복제(byte-level) 방식이라 TimescaleDB 의 하이퍼테이블 · Continuous Aggregate · 확장 객체가 모두 그대로 복제되어 추가 호환성 검증이 필요 없었습니다.',
+        ],
+      },
+      {
+        question: '팀이 구축한 복제 설정 — 핵심 구성 3계층',
+        preface:
+          'Streaming Replication 시스템의 구성은 다음 3계층으로 요약됩니다. 저는 이 구조의 동작 원리와 운영 포인트를 파악한 위에서 Grafana 데이터 소스 전환 시점, 복제 지연 모니터링 기준 등을 함께 판단·결정했습니다.',
+        reasons: [
+          'Primary 송신 안전망 — max_wal_senders · max_replication_slots · wal_keep_size 64GB 로 Standby 가 일시 지연되더라도 WAL 이 회수되지 않도록 구성',
+          'Standby 읽기 워크로드 차등 튜닝 — wal_buffers · max_wal_size 를 Primary 대비 2~4배 확장 + random_page_cost 상향(Sequential Scan 선호)',
+          'SSL/GSS 우선 보안 연결 — sslmode · gssencmode prefer + application_name 으로 다중 Standby 식별·모니터링',
+        ],
+      },
+    ],
+    codeSections: [
+      {
+        slug: 'alloy',
+        title: 'Grafana Alloy Config',
+        icon: 'pi pi-sliders-h',
+        headline:
+          'DB 서버 · Edge 서버에 sh 스크립트로 Grafana Alloy 단일 에이전트를 설치·배포하고, 노드 종류에 맞는 exporter 조합으로 호스트·Alloy 자체 메트릭을 push 방식으로 중앙 VictoriaMetrics 에 통합 전송하도록 구성했습니다.',
+        note: [
+          'ENV · VENDOR · REGION · ROLE 환경 변수를 external_labels 로 받아 PromQL 쿼리에서 환경 · 벤더 · 지역 · 서비스 역할 단위로 메트릭을 구분·필터링할 수 있도록 라벨링 체계를 통일했습니다.',
+          'INSTANCE 환경 변수로 모든 스크레이프의 instance 라벨을 통일(discovery.relabel)했습니다 — exporter 가 기본으로 박는 가변 식별자 대신 노드 단위로 일관된 식별이 보장됩니다.',
+          'Alloy 내장 unix exporter(node_exporter 호환)로 cpu · memory · filesystem · netdev 등 기본 collector 가 자동 활성화되고, enable_collectors 로 systemd · processes 등 추가 collector 도 손쉽게 확장 가능합니다.',
+          'remote_write queue_config(max_shards 200, capacity 2500, batch_send_deadline 5s)로 일시 네트워크 단절 시에도 메트릭 손실 없이 중앙 VictoriaMetrics 로 안전 전송되도록 구성했습니다.',
+        ],
+        snippets: [
+          {
+            title: 'Grafana Alloy — Edge 노드 호스트 메트릭 수집 설정',
+            description:
+              '단일 Alloy 에이전트가 unix exporter(호스트) + Alloy 자체 메트릭을 수집해 중앙 VictoriaMetrics 로 push. 환경 라벨링·노드 식별·재시도 정책까지 한 파일에서 정의.',
+            language: 'river',
+            code: `logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+// 중앙 저장소(VictoriaMetrics) remote_write
+prometheus.remote_write "central" {
+  external_labels = {
+    env    = sys.env("ENV"),
+    vendor = sys.env("VENDOR"),
+    region = sys.env("REGION"),
+    role   = sys.env("ROLE"),
+  }
+
+  endpoint {
+    url = sys.env("REMOTE_WRITE_URL")
+
+    basic_auth {
+      username = sys.env("REMOTE_WRITE_USER")
+      password = sys.env("REMOTE_WRITE_PASSWORD")
+    }
+
+    queue_config {
+      max_samples_per_send = 1000
+      max_shards           = 200
+      capacity             = 2500
+      batch_send_deadline  = "5s"
+    }
+  }
+}
+
+// 호스트 시스템 메트릭 (내장 unix exporter)
+prometheus.exporter.unix "host" {
+  // enable_collectors = ["systemd", "processes"]  // 필요 시 추가 활성화
+}
+
+// exporter 가 박는 기본 instance 라벨을 노드 식별자로 치환
+discovery.relabel "host_targets" {
+  targets = prometheus.exporter.unix.host.targets
+  rule {
+    target_label = "instance"
+    replacement  = sys.env("INSTANCE")
+  }
+}
+
+// Alloy 컨벤션: 수집 메트릭은 job="integrations/unix" 로 들어감
+// (exporter 가 target 에 미리 박는 라벨이라 job_name 으로 덮을 수 없음)
+prometheus.scrape "host_metrics" {
+  targets         = discovery.relabel.host_targets.output
+  forward_to      = [prometheus.remote_write.central.receiver]
+  scrape_interval = "15s"
+}
+
+// Alloy 자체 메트릭
+prometheus.scrape "alloy_self" {
+  targets = [{
+    __address__ = "127.0.0.1:12345",
+    job         = "alloy",
+    instance    = sys.env("INSTANCE"),
+  }]
+  forward_to      = [prometheus.remote_write.central.receiver]
+  scrape_interval = "30s"
+}`,
+          },
+        ],
+      },
+      {
+        slug: 'grafana',
+        title: 'Grafana Dashboard · Alert',
+        icon: 'pi pi-chart-line',
+        headline:
+          'Grafana Alerting 으로 unix exporter 메트릭과 연결된 PromQL 룰을 작성해 호스트 자원 임계치를 자동 감시·알림하도록 구성했습니다.',
+        note: [
+          'Alloy 가 박은 job="integrations/unix" 라벨로 필터링해 unix exporter 메트릭에만 룰이 적용되도록 분리 — 다른 exporter 와 충돌 없이 호스트 자원만 정밀하게 감시합니다.',
+          'MemAvailable 기준 사용률 계산 — 단순 Used 가 아니라 Available 을 기준으로 캐시·버퍼까지 반영한 실제 사용 가능 메모리로 임계치를 판단해 false-positive 알람을 줄였습니다.',
+        ],
+        snippets: [
+          {
+            title: 'Grafana 알람 룰 — 메모리 사용률 85% 초과 감지 (PromQL)',
+            description:
+              '(1 − MemAvailable / MemTotal) × 100 으로 메모리 사용률을 계산하고, unix exporter job 라벨로 필터링해 85% 초과 시 알람 발송.',
+            language: 'sql',
+            code: `(
+  1 - (
+    node_memory_MemAvailable_bytes{origin_prometheus=~"", job=~"integrations/unix"}
+    /
+    node_memory_MemTotal_bytes{origin_prometheus=~"", job=~"integrations/unix"}
+  )
+) * 100`,
+          },
+        ],
+        media: [
+          {
+            label: '알람',
+            src: `${import.meta.env.BASE_URL}architectures/project2-01.png`,
+            alt: 'Grafana Alert rule — Memory Used Over 85%',
+            caption: 'Memory Used Over 85% — 메모리 사용률 임계치(>85%) 알람 룰 + 최근 발화 이력',
+          },
+          {
+            label: '메트릭 대시보드',
+            src: `${import.meta.env.BASE_URL}architectures/project2-02.png`,
+            alt: 'Grafana Node Exporter Full Dashboard',
+            caption: 'Node Exporter Full — 다중 노드 CPU · 메모리 · 디스크 · 네트워크 통합 대시보드',
+          },
+        ],
+      },
+    ],
   },
   {
     slug: 'pipeline-cbam',
@@ -296,6 +461,17 @@ WHERE compression_status = 'Compressed';`,
       'Apache Airflow 기반의 자동화 배치 파이프라인 및 집계 DAGs 를 구축하여 운영 공수 80% 절감',
       'dbt 를 도입하여 파편화된 제조 데이터 표준화 및 데이터 이상치 (Outlier) 정제 파이프라인 구현',
       '생성형 AI 를 활용한 생산성 극대화로 신규 CBAM 서비스 (FastAPI, Vue) 아키텍처 설계부터 배포까지 1인 풀스택 전담 개발',
+    ],
+    media: [
+      {
+        label: '아키텍처',
+        src: `${import.meta.env.BASE_URL}architectures/iot_dataplatform_architecture.svg`,
+        alt: '데이터 표준화 파이프라인 · CBAM API 서비스 아키텍처',
+        description: [
+          '1·2년차에 구축한 IoT 수집·복제 인프라 (Edge → 클라우드 TimescaleDB Primary → 사내 Replica) 위에, 3년차에는 사내 내부 서버에 Airflow + dbt 표준화 파이프라인과 FastAPI + Vue 기반 CBAM 서비스를 신설했습니다.',
+          'Airflow 가 dbt 모델 (staging → intermediate → mart) 을 스케줄링해 Replica 원본을 표준화·집계된 마트 테이블로 가공하고, FastAPI 가 마트를 읽어 사용자용 CBAM 앱 (Vue) 과 관리자 페이지에 REST API 로 제공합니다. 기존 Grafana 데이터 대시보드와 모니터링·알람 체계 (VictoriaMetrics) 는 1·2년차 구성을 그대로 이어 사용자·관리자에게 노출됩니다.',
+        ],
+      },
     ],
   },
 ]

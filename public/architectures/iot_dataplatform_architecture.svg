@@ -1,0 +1,201 @@
+<svg viewBox="0 0 1720 880" xmlns="http://www.w3.org/2000/svg" font-family="'Pretendard','Noto Sans KR','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#5b6470"/></marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#2D9C6F"/></marker>
+    <marker id="arrowIndigo" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#44619E"/></marker>
+    <marker id="arrowTeal" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#0E9F8E"/></marker>
+    <marker id="arrowMon" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#7E57C2"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1c2733" flood-opacity="0.18"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="1720" height="880" fill="#FBFCFE"/>
+
+  <text x="860" y="44" text-anchor="middle" font-size="26" font-weight="700" fill="#1c2733">데이터 표준화 파이프라인 · API 서비스 아키텍처</text>
+  <text x="860" y="69" text-anchor="middle" font-size="13" fill="#7a8694">Airflow + dbt ELT (staging → intermediate → mart) · FastAPI + Vue (CBAM) · Grafana · VictoriaMetrics</text>
+
+  <!-- Zone bands -->
+  <rect x="24"   y="90" width="236" height="716" rx="16" fill="#EAF4FB" stroke="#B6D9F0" stroke-width="1.5"/>
+  <rect x="278"  y="90" width="232" height="716" rx="16" fill="#F1ECFA" stroke="#CDBCEC" stroke-width="1.5"/>
+  <rect x="528"  y="90" width="840" height="716" rx="16" fill="#EAF7EF" stroke="#BBE3CB" stroke-width="1.5"/>
+  <rect x="1386" y="90" width="290" height="716" rx="16" fill="#FBF1E9" stroke="#F0D6BE" stroke-width="1.5"/>
+
+  <text x="142"  y="122" text-anchor="middle" font-size="14.5" font-weight="700" fill="#2E6B96">현장 · Edge</text>
+  <text x="394"  y="122" text-anchor="middle" font-size="14.5" font-weight="700" fill="#6A4D9E">클라우드 · Cloud</text>
+  <text x="948"  y="122" text-anchor="middle" font-size="14.5" font-weight="700" fill="#2C8C5A">사내 내부 서버 · On-Prem Internal</text>
+  <text x="1531" y="122" text-anchor="middle" font-size="14.5" font-weight="700" fill="#B5722A">사용자 · 관리자</text>
+
+  <!-- ===== Z1 Field/Edge ===== -->
+  <g filter="url(#shadow)"><rect x="44" y="172" width="98" height="92" rx="10" fill="#2E86C1"/></g>
+  <g transform="translate(81,184)" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"><circle cx="12" cy="18" r="1.9" fill="#fff" stroke="none"/><path d="M6.5,14.5 a8,8 0 0 1 11,0"/><path d="M3,11 a12.5,12.5 0 0 1 18,0"/></g>
+  <text x="93" y="234" text-anchor="middle" font-size="13.5" font-weight="700" fill="#fff">IoT 센서</text>
+  <text x="93" y="252" text-anchor="middle" font-size="10" fill="#dcebf7">Sensors</text>
+
+  <g filter="url(#shadow)"><rect x="158" y="172" width="84" height="92" rx="10" fill="#1F6FB0"/></g>
+  <g transform="translate(188,184)" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><line x1="10" y1="3.5" x2="10" y2="7"/><line x1="14" y1="3.5" x2="14" y2="7"/><line x1="10" y1="17" x2="10" y2="20.5"/><line x1="14" y1="17" x2="14" y2="20.5"/><line x1="3.5" y1="10" x2="7" y2="10"/><line x1="3.5" y1="14" x2="7" y2="14"/><line x1="17" y1="10" x2="20.5" y2="10"/><line x1="17" y1="14" x2="20.5" y2="14"/></g>
+  <text x="200" y="234" text-anchor="middle" font-size="13.5" font-weight="700" fill="#fff">PLC</text>
+  <text x="200" y="252" text-anchor="middle" font-size="10" fill="#dcebf7">Controller</text>
+
+  <rect x="84" y="306" width="116" height="22" rx="11" fill="#ffffff" stroke="#9CC9E8" stroke-width="1.1"/>
+  <text x="142" y="321" text-anchor="middle" font-size="10" font-weight="600" fill="#2E6B96">RS-232·485 / LAN</text>
+
+  <g filter="url(#shadow)"><rect x="40" y="384" width="204" height="138" rx="12" fill="#117A8B"/></g>
+  <g transform="translate(131,396)" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="13" width="18" height="6" rx="1.5"/><circle cx="6.5" cy="7" r="1" fill="#fff" stroke="none"/><circle cx="6.5" cy="16" r="1" fill="#fff" stroke="none"/></g>
+  <text x="142" y="444" text-anchor="middle" font-size="14.5" font-weight="700" fill="#fff">현장 엣지 서버</text>
+  <text x="142" y="461" text-anchor="middle" font-size="10" fill="#d6eef1">Edge Server</text>
+  <text x="142" y="478" text-anchor="middle" font-size="10.5" font-weight="600" fill="#bfe9ee">수집 · OPC UA 변환</text>
+  <rect x="58" y="488" width="168" height="22" rx="7" fill="#7E57C2"/>
+  <text x="142" y="503" text-anchor="middle" font-size="9.5" font-weight="600" fill="#fff">◆ Grafana Alloy</text>
+
+  <!-- ===== Z2 Cloud : PgBouncer wrapper + TimescaleDB Primary ===== -->
+  <g filter="url(#shadow)"><rect x="292" y="300" width="206" height="190" rx="14" fill="#EAF1F6" stroke="#3D6E8F" stroke-width="2"/></g>
+  <g transform="translate(304,310)" stroke="#3D6E8F" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="3" x2="8" y2="3"/><line x1="2" y1="10" x2="8" y2="10"/><line x1="2" y1="17" x2="8" y2="17"/><path d="M8,3 C13,3 13,10 18,10"/><path d="M8,10 H18"/><path d="M8,17 C13,17 13,10 18,10"/><circle cx="18" cy="10" r="1.5" fill="#3D6E8F" stroke="none"/></g>
+  <text x="332" y="320" font-size="12.5" font-weight="700" fill="#2C5572">PgBouncer</text>
+  <text x="332" y="334" font-size="9" fill="#5a7892">Connection Pool</text>
+  <g filter="url(#shadow)"><rect x="308" y="344" width="176" height="132" rx="11" fill="#2D9C6F"/></g>
+  <g transform="translate(322,356)" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"><ellipse cx="9" cy="5" rx="7" ry="2.6"/><path d="M2,5 v10 a7,2.6 0 0 0 14,0 v-10"/><path d="M2,10 a7,2.6 0 0 0 14,0"/><circle cx="15.5" cy="15.5" r="3.6" fill="#2D9C6F"/><path d="M15.5,13.4 v2.1 l1.5,1"/></g>
+  <text x="352" y="371" font-size="13.5" font-weight="700" fill="#fff">TimescaleDB</text>
+  <text x="352" y="387" font-size="10" fill="#d8f1e6">Primary · Cloud</text>
+  <rect x="320" y="396" width="152" height="22" rx="6" fill="#ffffff" fill-opacity="0.16" stroke="#FF5A5F" stroke-width="1.4"/>
+  <text x="396" y="411" text-anchor="middle" font-size="9" font-weight="600" fill="#fff">원본 적재 + 마트(dbt)</text>
+  <rect x="320" y="444" width="152" height="22" rx="6" fill="#7E57C2"/>
+  <text x="396" y="459" text-anchor="middle" font-size="9" font-weight="600" fill="#fff">◆ Alloy (Prometheus)</text>
+
+  <!-- ===== Z3 On-Prem Internal ===== -->
+  <!-- TimescaleDB internal (Replica raw + Mart) -->
+  <g filter="url(#shadow)"><rect x="556" y="172" width="256" height="132" rx="12" fill="#2D9C6F"/></g>
+  <g transform="translate(574,186)" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"><ellipse cx="10" cy="5" rx="7.5" ry="2.8"/><path d="M2.5,5 v11 a7.5,2.8 0 0 0 15,0 v-11"/><path d="M2.5,10.5 a7.5,2.8 0 0 0 15,0"/></g>
+  <text x="606" y="202" font-size="15" font-weight="700" fill="#fff">TimescaleDB</text>
+  <text x="606" y="219" font-size="10.5" fill="#e0f3ea">Replica · 원본 + 마트 (read-only)</text>
+  <rect x="570" y="230" width="228" height="24" rx="7" fill="#ffffff" fill-opacity="0.18"/>
+  <text x="684" y="246" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">복제 원본 데이터 (Streaming Replica)</text>
+  <rect x="570" y="262" width="228" height="24" rx="7" fill="#ffffff" fill-opacity="0.18"/>
+  <text x="684" y="278" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">마트 테이블 (복제 수신)</text>
+
+  <!-- Airflow + dbt -->
+  <g filter="url(#shadow)"><rect x="556" y="350" width="256" height="116" rx="12" fill="#44619E" stroke="#FF5A5F" stroke-width="2.6"/></g>
+  <rect x="764" y="341" width="44" height="18" rx="9" fill="#FF5A5F"/>
+  <text x="786" y="354" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">NEW</text>
+  <g transform="translate(574,366)" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="5" r="2.2"/><circle cx="5" cy="17" r="2.2"/><circle cx="18" cy="11" r="2.2"/><path d="M7,6 L15.8,10 M7,16 L15.8,12"/></g>
+  <text x="606" y="378" font-size="14.5" font-weight="700" fill="#fff">Airflow + dbt</text>
+  <text x="606" y="395" font-size="10.5" fill="#dde4f1">표준화 · 전처리 · 집계 (ELT)</text>
+  <rect x="568" y="408" width="68" height="24" rx="6" fill="#ffffff" fill-opacity="0.18"/>
+  <text x="602" y="424" text-anchor="middle" font-size="9.5" font-weight="600" fill="#fff">staging</text>
+  <text x="640" y="425" text-anchor="middle" font-size="11" fill="#dde4f1">→</text>
+  <rect x="650" y="408" width="92" height="24" rx="6" fill="#ffffff" fill-opacity="0.18"/>
+  <text x="696" y="424" text-anchor="middle" font-size="9.5" font-weight="600" fill="#fff">intermediate</text>
+  <text x="746" y="425" text-anchor="middle" font-size="11" fill="#dde4f1">→</text>
+  <rect x="756" y="408" width="44" height="24" rx="6" fill="#ffffff" fill-opacity="0.28"/>
+  <text x="778" y="424" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">mart</text>
+  <text x="684" y="452" text-anchor="middle" font-size="9" fill="#cfd8ea">클라우드 TimescaleDB read → mart write</text>
+
+  <!-- VictoriaMetrics -->
+  <g filter="url(#shadow)"><rect x="556" y="510" width="256" height="110" rx="12" fill="#7E57C2"/></g>
+  <g transform="translate(574,524)" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"><line x1="3" y1="20" x2="21" y2="20"/><rect x="4" y="12" width="3.5" height="7" rx="1" fill="#fff" stroke="none"/><rect x="10" y="6" width="3.5" height="13" rx="1" fill="#fff" stroke="none"/><rect x="16" y="9" width="3.5" height="10" rx="1" fill="#fff" stroke="none"/></g>
+  <text x="606" y="540" font-size="14.5" font-weight="700" fill="#fff">VictoriaMetrics</text>
+  <text x="606" y="558" font-size="10.5" fill="#e9e0f6">메트릭 저장 · Metrics TSDB</text>
+  <rect x="570" y="570" width="228" height="24" rx="7" fill="#ffffff" fill-opacity="0.18"/>
+  <text x="684" y="586" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">Prometheus 호환 모니터링 저장소</text>
+
+  <!-- Grafana #1 data -->
+  <g filter="url(#shadow)"><rect x="982" y="172" width="152" height="116" rx="13" fill="#E8743B"/></g>
+  <g transform="translate(1040,188)" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,21 3,3"/><polyline points="3,21 23,21"/><polyline points="6,16 11,10 15,13 22,5"/><circle cx="11" cy="10" r="1.4" fill="#fff" stroke="none"/><circle cx="15" cy="13" r="1.4" fill="#fff" stroke="none"/><circle cx="22" cy="5" r="1.4" fill="#fff" stroke="none"/></g>
+  <text x="1058" y="242" text-anchor="middle" font-size="15.5" font-weight="700" fill="#fff">Grafana</text>
+  <text x="1058" y="262" text-anchor="middle" font-size="10" fill="#fce0d3">데이터 대시보드</text>
+  <text x="1058" y="278" text-anchor="middle" font-size="9" fill="#fad2bf">Data Dashboards</text>
+
+  <!-- FastAPI -->
+  <g filter="url(#shadow)"><rect x="970" y="348" width="180" height="120" rx="13" fill="#0E9F8E" stroke="#FF5A5F" stroke-width="2.6"/></g>
+  <rect x="1104" y="339" width="44" height="18" rx="9" fill="#FF5A5F"/>
+  <text x="1126" y="352" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">NEW</text>
+  <g transform="translate(1030,362)" stroke="#fff" stroke-width="1.7" fill="#fff" stroke-linejoin="round"><path d="M13,2 L4,14 h6 l-1,8 9,-12 h-6 z"/></g>
+  <text x="1060" y="392" text-anchor="middle" font-size="15.5" font-weight="700" fill="#fff">FastAPI</text>
+  <text x="1060" y="411" text-anchor="middle" font-size="10" fill="#d6f3ee">API 서버 · REST</text>
+  <rect x="986" y="422" width="148" height="24" rx="7" fill="#ffffff" fill-opacity="0.2"/>
+  <text x="1060" y="438" text-anchor="middle" font-size="9.5" font-weight="600" fill="#fff">Vue 앱 / 관리자 API 제공</text>
+
+  <!-- Grafana #2 monitoring -->
+  <g filter="url(#shadow)"><rect x="982" y="510" width="152" height="110" rx="13" fill="#E8743B"/></g>
+  <g transform="translate(1040,524)" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,21 3,3"/><polyline points="3,21 23,21"/><polyline points="6,16 11,10 15,13 22,5"/><circle cx="11" cy="10" r="1.4" fill="#fff" stroke="none"/><circle cx="15" cy="13" r="1.4" fill="#fff" stroke="none"/><circle cx="22" cy="5" r="1.4" fill="#fff" stroke="none"/></g>
+  <text x="1058" y="576" text-anchor="middle" font-size="15.5" font-weight="700" fill="#fff">Grafana</text>
+  <text x="1058" y="596" text-anchor="middle" font-size="10" fill="#fce0d3">모니터링 · 알람</text>
+  <text x="1058" y="611" text-anchor="middle" font-size="9" fill="#fad2bf">Monitoring · Alerts</text>
+
+  <!-- ===== Z4 User / Admin ===== -->
+  <g filter="url(#shadow)"><rect x="1404" y="198" width="254" height="158" rx="13" fill="#5D6D7E"/></g>
+  <g transform="translate(1519,210)" fill="#fff"><circle cx="12" cy="8" r="4.6"/><path d="M3.5,21 a8.5,8 0 0 1 17,0 z"/></g>
+  <text x="1531" y="262" text-anchor="middle" font-size="15.5" font-weight="700" fill="#fff">사용자</text>
+  <rect x="1418" y="274" width="226" height="26" rx="7" fill="#41B883" stroke="#FF5A5F" stroke-width="1.8"/>
+  <text x="1531" y="291" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">CBAM 앱 (Vue)</text>
+  <rect x="1418" y="306" width="226" height="26" rx="7" fill="#E8743B"/>
+  <text x="1531" y="323" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">데이터 대시보드 (Grafana)</text>
+
+  <g filter="url(#shadow)"><rect x="1404" y="430" width="254" height="158" rx="13" fill="#6A5A7E"/></g>
+  <g transform="translate(1519,442)" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.6"/><path d="M12,2.6 v3 M12,18.4 v3 M2.6,12 h3 M18.4,12 h3 M5.1,5.1 l2.1,2.1 M16.8,16.8 l2.1,2.1 M18.9,5.1 l-2.1,2.1 M7.2,16.8 l-2.1,2.1"/></g>
+  <text x="1531" y="494" text-anchor="middle" font-size="15.5" font-weight="700" fill="#fff">관리자</text>
+  <rect x="1418" y="506" width="226" height="26" rx="7" fill="#41B883" stroke="#FF5A5F" stroke-width="1.8"/>
+  <text x="1531" y="523" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">관리자 페이지 (Vue)</text>
+  <rect x="1418" y="538" width="226" height="26" rx="7" fill="#E8743B"/>
+  <text x="1531" y="555" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">모니터링 · 알람 (Grafana)</text>
+
+  <!-- ===== Arrows ===== -->
+  <!-- IoT/PLC -> Edge -->
+  <path d="M93,264 C93,320 135,350 138,382" fill="none" stroke="#5b6470" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M200,264 C200,320 150,350 146,382" fill="none" stroke="#5b6470" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Edge -> PgBouncer (write) -->
+  <path d="M244,448 C266,446 278,418 290,406" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <text x="268" y="424" text-anchor="middle" font-size="10" font-weight="600" fill="#56606c">적재 write</text>
+  <!-- Cloud Primary -> Internal Replica (Streaming Replication) -->
+  <path d="M462,300 C500,272 524,246 554,240" fill="none" stroke="#2D9C6F" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="480" y="255" text-anchor="middle" font-size="10" font-weight="700" fill="#2D9C6F">Streaming</text>
+  <text x="480" y="268" text-anchor="middle" font-size="10" font-weight="700" fill="#2D9C6F">Replication</text>
+
+  <!-- ELT: Airflow+dbt <-> Cloud TimescaleDB (via PgBouncer) -->
+  <path d="M500,402 L551,402" fill="none" stroke="#44619E" stroke-width="2.2" marker-end="url(#arrowIndigo)"/>
+  <text x="527" y="395" text-anchor="middle" font-size="9.5" font-weight="600" fill="#44619E">read</text>
+  <path d="M551,424 L500,424" fill="none" stroke="#44619E" stroke-width="2.2" marker-end="url(#arrowIndigo)"/>
+  <text x="527" y="438" text-anchor="middle" font-size="9.5" font-weight="600" fill="#44619E">mart write</text>
+
+  <!-- TimescaleDB -> Grafana#1 (data) -->
+  <path d="M812,224 C880,228 920,232 980,232" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <text x="896" y="222" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">조회 query</text>
+  <!-- TimescaleDB -> FastAPI (mart read) -->
+  <path d="M812,276 C892,300 900,372 968,392" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
+  <text x="876" y="318" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0B8576">마트 조회</text>
+  <!-- VictoriaMetrics -> Grafana#2 -->
+  <path d="M812,564 C880,564 920,564 980,564" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <text x="896" y="555" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">metrics</text>
+
+  <!-- Grafana#1 -> User -->
+  <path d="M1134,232 C1280,236 1300,262 1402,268" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <text x="1250" y="240" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">데이터 대시보드</text>
+  <!-- FastAPI -> User -->
+  <path d="M1150,396 C1280,388 1300,318 1402,300" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
+  <text x="1264" y="360" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0B8576">API · CBAM</text>
+  <!-- FastAPI -> Admin -->
+  <path d="M1150,420 C1284,432 1300,486 1402,500" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
+  <text x="1262" y="470" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0B8576">API · 관리자페이지</text>
+  <!-- Grafana#2 -> Admin -->
+  <path d="M1134,564 C1280,560 1300,538 1402,530" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <text x="1252" y="586" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">모니터링 · 알람</text>
+
+  <!-- Monitoring (dashed) -->
+  <path d="M226,500 C420,660 470,612 554,584" fill="none" stroke="#7E57C2" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
+  <text x="400" y="640" text-anchor="middle" font-size="10" font-weight="600" fill="#6A4399">Prometheus metrics (Edge)</text>
+  <path d="M472,466 C516,520 510,556 554,556" fill="none" stroke="#7E57C2" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
+  <text x="500" y="512" text-anchor="middle" font-size="9.5" font-weight="600" fill="#6A4399">metrics (Cloud DB)</text>
+
+  <!-- ===== Legend ===== -->
+  <line x1="300" y1="838" x2="338" y2="838" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <text x="345" y="842" font-size="11" fill="#56606c">데이터 흐름</text>
+  <line x1="450" y1="838" x2="488" y2="838" stroke="#2D9C6F" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="495" y="842" font-size="11" fill="#2D9C6F">Streaming Replication</text>
+  <line x1="680" y1="838" x2="718" y2="838" stroke="#44619E" stroke-width="2.2" marker-end="url(#arrowIndigo)"/>
+  <text x="725" y="842" font-size="11" fill="#44619E">ELT (Airflow·dbt)</text>
+  <line x1="880" y1="838" x2="918" y2="838" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
+  <text x="925" y="842" font-size="11" fill="#0B8576">API (FastAPI)</text>
+  <line x1="1050" y1="838" x2="1088" y2="838" stroke="#7E57C2" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
+  <text x="1095" y="842" font-size="11" fill="#6A4399">모니터링 (Prometheus)</text>
+  <rect x="1288" y="830" width="32" height="15" rx="7" fill="#FF5A5F"/>
+  <text x="1304" y="841" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">NEW</text>
+  <text x="1328" y="842" font-size="11" fill="#D63A40">3년차 신규 요소</text>
+</svg>

@@ -4,7 +4,21 @@ import Card from 'primevue/card'
 import SkillBadge from '@/components/SkillBadge.vue'
 import CodeBlock from '@/components/CodeBlock.vue'
 import FloatingToc from '@/components/FloatingToc.vue'
-import { getProjectsByYear, years, type MediaItem, type YearKey } from '@/data/projects'
+import ZoomableImage from '@/components/ZoomableImage.vue'
+import {
+  getProjectsByYear,
+  years,
+  type MediaItem,
+  type TechRationale,
+  type YearKey,
+} from '@/data/projects'
+
+function asRationaleList(
+  r: TechRationale | TechRationale[] | undefined,
+): TechRationale[] {
+  if (!r) return []
+  return Array.isArray(r) ? r : [r]
+}
 
 const props = defineProps<{ year: YearKey }>()
 
@@ -16,10 +30,18 @@ const tocItems = computed(() => {
   for (const p of items.value) {
     list.push({ id: `project-${p.slug}`, label: p.title, level: 0 })
     if (p.media?.length) {
-      list.push({ id: `arch-${p.slug}`, label: '아키텍처', level: 1 })
+      list.push({ id: `arch-${p.slug}`, label: '아키텍처', level: 0 })
     }
-    if (p.snippets?.length) {
-      list.push({ id: `code-${p.slug}`, label: '핵심 코드', level: 1 })
+    if (p.codeSections?.length) {
+      for (const sec of p.codeSections) {
+        list.push({
+          id: `code-${p.slug}-${sec.slug}`,
+          label: sec.title,
+          level: 0,
+        })
+      }
+    } else if (p.snippets?.length) {
+      list.push({ id: `code-${p.slug}`, label: '핵심 코드', level: 0 })
     }
   }
   if (meta.value.showcase) {
@@ -171,18 +193,17 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
                     class="overflow-hidden rounded-md border border-surface-200 bg-surface-50 dark:border-surface-800 dark:bg-surface-900"
                     :class="group.items.length > 1 ? 'aspect-video' : ''"
                   >
-                    <img
+                    <ZoomableImage
                       :src="item.src"
                       :alt="item.alt"
-                      :class="[
-                        'block w-full',
+                      :fill-container="group.items.length > 1"
+                      :image-class="
                         group.items.length > 1
                           ? (item.fit === 'contain'
-                              ? 'h-full object-contain'
-                              : 'h-full object-cover object-top')
-                          : '',
-                      ]"
-                      loading="lazy"
+                              ? 'block h-full w-full object-contain'
+                              : 'block h-full w-full object-cover object-top')
+                          : 'block w-full'
+                      "
                     />
                   </div>
                   <figcaption
@@ -195,41 +216,47 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
               </div>
 
               <div
-                v-if="gIdx === 0 && project.techRationale"
-                class="mt-5 overflow-hidden rounded-lg border border-primary-200 bg-primary-50/40 dark:border-primary-800 dark:bg-primary-950/20"
+                v-if="gIdx === 0 && asRationaleList(project.techRationale).length"
+                class="mt-5 flex flex-col gap-3"
               >
                 <div
-                  class="flex items-center gap-2 border-b border-primary-200 bg-primary-50/60 px-4 py-2.5 dark:border-primary-800 dark:bg-primary-950/30"
+                  v-for="(rationale, qIdx) in asRationaleList(project.techRationale)"
+                  :key="qIdx"
+                  class="overflow-hidden rounded-lg border border-primary-200 bg-primary-50/40 dark:border-primary-800 dark:bg-primary-950/20"
                 >
-                  <i
-                    class="pi pi-question-circle text-sm text-primary"
-                    aria-hidden="true"
-                  />
-                  <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">
-                    {{ project.techRationale.question }}
-                  </span>
-                </div>
-                <div class="space-y-3 p-4">
-                  <p
-                    v-if="project.techRationale.preface"
-                    class="text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+                  <div
+                    class="flex items-center gap-2 border-b border-primary-200 bg-primary-50/60 px-4 py-2.5 dark:border-primary-800 dark:bg-primary-950/30"
                   >
-                    {{ project.techRationale.preface }}
-                  </p>
-                  <ol class="space-y-2 pl-0">
-                    <li
-                      v-for="(reason, rIdx) in project.techRationale.reasons"
-                      :key="rIdx"
-                      class="flex gap-2.5 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+                    <i
+                      class="pi pi-question-circle text-sm text-primary"
+                      aria-hidden="true"
+                    />
+                    <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">
+                      {{ rationale.question }}
+                    </span>
+                  </div>
+                  <div class="space-y-3 p-4">
+                    <p
+                      v-if="rationale.preface"
+                      class="text-sm leading-relaxed text-surface-700 dark:text-surface-300"
                     >
-                      <span
-                        class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+                      {{ rationale.preface }}
+                    </p>
+                    <ol class="space-y-2 pl-0">
+                      <li
+                        v-for="(reason, rIdx) in rationale.reasons"
+                        :key="rIdx"
+                        class="flex gap-2.5 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
                       >
-                        {{ rIdx + 1 }}
-                      </span>
-                      <span>{{ reason }}</span>
-                    </li>
-                  </ol>
+                        <span
+                          class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+                        >
+                          {{ rIdx + 1 }}
+                        </span>
+                        <span>{{ reason }}</span>
+                      </li>
+                    </ol>
+                  </div>
                 </div>
               </div>
             </section>
@@ -238,7 +265,7 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
       </Card>
 
       <Card
-        v-if="project.snippets?.length"
+        v-if="!project.codeSections?.length && project.snippets?.length"
         :id="`code-${project.slug}`"
         class="scroll-mt-24"
       >
@@ -290,47 +317,158 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
           </div>
         </template>
       </Card>
+
+      <Card
+        v-for="section in project.codeSections"
+        :key="section.slug"
+        :id="`code-${project.slug}-${section.slug}`"
+        class="scroll-mt-24"
+      >
+        <template #title>
+          <span class="flex items-center gap-2 text-xl font-bold text-surface-900 dark:text-surface-0">
+            <i :class="[section.icon ?? 'pi pi-code', 'text-base text-primary']" aria-hidden="true" />
+            {{ section.title }}
+          </span>
+        </template>
+        <template #content>
+          <div
+            v-if="section.headline || section.note?.length"
+            class="mb-4 rounded-md border-l-4 border-primary-300 bg-primary-50/60 px-4 py-3 dark:border-primary-700 dark:bg-primary-950/30"
+          >
+            <p
+              v-if="section.headline"
+              class="text-sm font-semibold leading-relaxed text-surface-900 dark:text-surface-0"
+            >
+              {{ section.headline }}
+            </p>
+            <ol
+              v-if="section.note?.length"
+              class="space-y-2 pl-0"
+              :class="section.headline ? 'mt-3' : ''"
+            >
+              <li
+                v-for="(item, idx) in section.note"
+                :key="idx"
+                class="flex gap-2.5 text-sm leading-relaxed text-surface-700 dark:text-surface-200"
+              >
+                <span
+                  class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+                >
+                  {{ idx + 1 }}
+                </span>
+                <span>{{ item }}</span>
+              </li>
+            </ol>
+          </div>
+          <div class="flex flex-col gap-4">
+            <CodeBlock
+              v-for="snippet in section.snippets"
+              :key="snippet.title"
+              :title="snippet.title"
+              :description="snippet.description"
+              :language="snippet.language"
+              :code="snippet.code"
+            />
+          </div>
+
+          <div v-if="section.media?.length" class="mt-6 space-y-8">
+            <section
+              v-for="(group, gIdx) in groupMedia(section.media)"
+              :key="gIdx"
+            >
+              <div
+                class="mb-2 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400"
+              >
+                {{ group.label }}
+                <span
+                  v-if="group.items.length > 1"
+                  class="ml-1 normal-case text-surface-400"
+                >
+                  ({{ group.items.length }})
+                </span>
+              </div>
+              <div
+                :class="
+                  group.items.length > 1
+                    ? 'grid gap-3 sm:grid-cols-2'
+                    : ''
+                "
+              >
+                <figure v-for="(item, idx) in group.items" :key="idx">
+                  <div
+                    class="overflow-hidden rounded-md border border-surface-200 bg-surface-50 dark:border-surface-800 dark:bg-surface-900"
+                    :class="group.items.length > 1 ? 'aspect-video' : ''"
+                  >
+                    <ZoomableImage
+                      :src="item.src"
+                      :alt="item.alt"
+                      :fill-container="group.items.length > 1"
+                      :image-class="
+                        group.items.length > 1
+                          ? (item.fit === 'contain'
+                              ? 'block h-full w-full object-contain'
+                              : 'block h-full w-full object-cover object-top')
+                          : 'block w-full'
+                      "
+                    />
+                  </div>
+                  <figcaption
+                    v-if="item.caption"
+                    class="mt-2 text-center text-xs text-surface-500 dark:text-surface-400"
+                  >
+                    {{ item.caption }}
+                  </figcaption>
+                </figure>
+              </div>
+            </section>
+          </div>
+        </template>
+      </Card>
       </article>
     </div>
 
-    <section
-      v-if="meta.showcase"
-      :id="`showcase-${year}`"
-      class="mt-10 scroll-mt-24 rounded-lg border border-surface-200 bg-surface-50 p-6 dark:border-surface-800 dark:bg-surface-900/40"
-    >
-      <h3 class="mb-1 text-xl font-bold text-surface-900 dark:text-surface-0">
-        {{ meta.showcase.title }}
-      </h3>
-      <p
-        v-if="meta.showcase.description"
-        class="mb-5 text-sm leading-relaxed text-surface-600 dark:text-surface-300"
-      >
-        {{ meta.showcase.description }}
-      </p>
-      <div class="grid gap-3 sm:grid-cols-2">
-        <figure v-for="(item, idx) in meta.showcase.items" :key="idx">
-          <div
-            class="aspect-video overflow-hidden rounded-md border border-surface-200 bg-white dark:border-surface-700 dark:bg-surface-900"
+    <div v-if="meta.showcase" class="mt-10">
+      <Card :id="`showcase-${year}`" class="scroll-mt-24">
+        <template #title>
+          <span class="flex items-center gap-2 text-xl font-bold text-surface-900 dark:text-surface-0">
+            <i class="pi pi-images text-base text-primary" aria-hidden="true" />
+            {{ meta.showcase.title }}
+          </span>
+        </template>
+        <template #content>
+          <p
+            v-if="meta.showcase.description"
+            class="mb-5 text-sm leading-relaxed text-surface-600 dark:text-surface-300"
           >
-            <img
-              :src="item.src"
-              :alt="item.alt"
-              :class="[
-                'h-full w-full block',
-                item.fit === 'contain' ? 'object-contain' : 'object-cover object-top',
-              ]"
-              loading="lazy"
-            />
+            {{ meta.showcase.description }}
+          </p>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <figure v-for="(item, idx) in meta.showcase.items" :key="idx">
+              <div
+                class="aspect-video overflow-hidden rounded-md border border-surface-200 bg-surface-50 dark:border-surface-700 dark:bg-surface-900"
+              >
+                <ZoomableImage
+                  :src="item.src"
+                  :alt="item.alt"
+                  fill-container
+                  :image-class="
+                    item.fit === 'contain'
+                      ? 'block h-full w-full object-contain'
+                      : 'block h-full w-full object-cover object-top'
+                  "
+                />
+              </div>
+              <figcaption
+                v-if="item.caption"
+                class="mt-2 text-center text-xs text-surface-500 dark:text-surface-400"
+              >
+                {{ item.caption }}
+              </figcaption>
+            </figure>
           </div>
-          <figcaption
-            v-if="item.caption"
-            class="mt-2 text-center text-xs text-surface-500 dark:text-surface-400"
-          >
-            {{ item.caption }}
-          </figcaption>
-        </figure>
-      </div>
-    </section>
+        </template>
+      </Card>
+    </div>
 
     <FloatingToc v-if="tocItems.length > 0" :items="tocItems" />
   </div>
