@@ -80,6 +80,8 @@ export interface CodeSection {
   note?: string[]
   snippets: CodeSnippet[]
   media?: MediaItem[]
+  /** true 면 media 를 코드 스니펫 위에 배치. 기본은 아래(false). */
+  mediaAbove?: boolean
 }
 
 export interface TechRationale {
@@ -470,6 +472,429 @@ prometheus.scrape "alloy_self" {
         description: [
           '1·2년차에 구축한 IoT 수집·복제 인프라 (Edge → 클라우드 TimescaleDB Primary → 사내 Replica) 위에, 3년차에는 사내 내부 서버에 Airflow + dbt 표준화 파이프라인과 FastAPI + Vue 기반 CBAM 서비스를 신설했습니다.',
           'Airflow 가 dbt 모델 (staging → intermediate → mart) 을 스케줄링해 Replica 원본을 표준화·집계된 마트 테이블로 가공하고, FastAPI 가 마트를 읽어 사용자용 CBAM 앱 (Vue) 과 관리자 페이지에 REST API 로 제공합니다. 기존 Grafana 데이터 대시보드와 모니터링·알람 체계 (VictoriaMetrics) 는 1·2년차 구성을 그대로 이어 사용자·관리자에게 노출됩니다.',
+        ],
+      },
+    ],
+    techRationale: [
+      {
+        question: 'Airflow 를 도입한 이유',
+        preface:
+          '1년차에 도입한 TimescaleDB Continuous Aggregate(Cagg) 로 대부분의 집계 처리를 운영해왔지만, 업체 수가 늘어나면서 한계가 드러났습니다. Cagg 는 단일 SELECT 표현 안에서만 가능해 복잡한 JOIN·전처리·조건 분기를 담기 어려웠고, refresh_interval 기반이라 "정확한 시점" 스케줄링이 불가능했으며, 업체별 DB 가 늘면서 각 DB 의 Cagg 정의·관리 비용이 누적되었습니다. 이를 해소하기 위해 표준화·집계 파이프라인을 Airflow 로 전환·중앙화하기로 결정했습니다.',
+        reasons: [
+          'DAG task 로 SQL · Python · 외부 호출까지 자유롭게 조합 가능 — Cagg 의 단일 SELECT 표현력 제약을 우회하고 복잡한 전처리·집계 로직을 코드로 구성할 수 있습니다.',
+          'cron 기반 정확한 실행 시점 + 의존성·재시도·SLA·백필 같은 운영 컨트롤 확보 — 단순 "주기 refresh" 만 가능한 Cagg 대비 운영 시점 통제력이 강화됩니다.',
+          '업체별 DB 마다 흩어져 있던 Cagg 정의를 단일 Airflow 인스턴스의 DAG 으로 중앙 집중 관리 — 업체가 늘어도 운영·변경 공수가 선형으로 증가하지 않습니다.',
+        ],
+      },
+      {
+        question: 'dbt 를 도입한 이유',
+        preface:
+          '업체·장비별로 누적되어 온 센서 테이블이 파편화되어 컬럼 명세·단위·이상값 처리 기준이 제각각이라 관리 비용이 누적되었고, 이상값(Outlier) 정제 필요성도 함께 커졌습니다. 전처리·표준화 로직을 코드로 통일·중앙 관리할 수단이 필요했고, Airflow 와 자연스럽게 결합되는 dbt 를 채택해 데이터 표준화·중앙 관리 체계를 구축했습니다.',
+        reasons: [
+          'ref() · sources 로 모델 간 의존성·lineage 가 자동 추적되어 파편화된 테이블을 staging → intermediate → mart 의 일관된 흐름으로 표준화·중앙 관리할 수 있게 되었습니다.',
+          'tests · macros 로 이상값 검출·전처리 규칙을 모든 모델에 일관 적용 — 수기 SQL 로 흩어져 있던 정제 로직을 제거하고 데이터 품질을 코드로 강제했습니다.',
+          '기존 팀 SQL 자산을 그대로 살리면서 모델링·테스트·문서화·lineage 가 한 번에 결합 — 도입 학습 곡선이 낮고 운영 공수 절감 효과가 빠르게 가시화되었습니다.',
+        ],
+      },
+      {
+        question: 'CBAM 스택을 FastAPI + Vue 로 선택한 이유',
+        preface:
+          '신규 CBAM 서비스를 1인 풀스택으로 설계부터 배포까지 책임져야 했고, 사용 가능한 백엔드 스택 중 Spring Boot 와 FastAPI 를 비교 검토한 끝에 FastAPI + Vue 조합을 채택했습니다.',
+        reasons: [
+          'pydantic 모델 기반으로 OpenAPI 스펙이 자동 생성되어 프론트(Vue) 와의 API 계약 동기화 비용이 0 에 가깝게 줄어듭니다 — Spring Boot 대비 별도 어노테이션·설정 없이 자연스럽게 확보됩니다.',
+          'async/await 기반 비동기 처리로 대용량 시계열 데이터 조회·집계 응답에 유리할 것으로 판단 — 동시 요청에 대한 처리량 측면에서 Spring Boot 동기 처리 대비 우위가 기대됩니다.',
+          '생성형 AI(Claude) 활용으로 1인 풀스택 개발 생산성이 충분히 확보된다고 판단 — 백엔드·프론트엔드 양쪽을 단일 개발자가 일정 내에 완주할 수 있는 현실성이 결정 요인이었습니다.',
+        ],
+      },
+    ],
+    codeSections: [
+      {
+        slug: 'dbt',
+        title: 'dbt Model · 표준화 + 정제',
+        icon: 'pi pi-filter',
+        headline:
+          '파편화된 9개 벤더별 raw 테이블을 단일 표준 스키마로 통합(staging) → IQR + 룰 기반 정제(intermediate) → TimescaleDB hypertable 위에 incremental 적재(mart) 의 흐름으로 데이터 표준화·중앙 관리 체계를 코드화했습니다.',
+        note: [
+          'source_exists() 매크로로 환경별 raw 테이블 존재 여부를 런타임에 확인해 조건부 CTE 만 활성화 — 같은 dbt 코드가 업체별 DB 에 그대로 배포됩니다.',
+          'staging 은 컬럼·단위 표준화, intermediate 는 dedup + range·IQR 정제, mart 는 집계 + hypertable 적재로 책임을 계층 분리했습니다.',
+          'mart 는 incremental + delete+insert 전략 + post_hook 으로 TimescaleDB hypertable·인덱스 생성을 자동화 — 1년차 인프라와 매끄럽게 연결됩니다.',
+        ],
+        snippets: [
+          {
+            title: 'powermeter_union 매크로 — 9개 벤더 raw 테이블 → 단일 표준 스키마',
+            description:
+              'source_exists() 로 환경에 존재하는 테이블만 감지 → 컬럼·단위·구조 패턴별 src CTE 로 정규화 → UNION ALL.',
+            language: 'sql',
+            code: `{% macro powermeter_union() %}
+{#
+  9개 벤더별 powermeter raw 테이블을 단일 표준 스키마(v1/i1/kw/pf/kwh)로 통합합니다.
+  - 컬럼 패턴: 약어형(v1/i1/kw) vs 서술형(phase_a_voltage_magnitude / total_active_power)
+  - 단위 패턴: kW·kWh 그대로 vs W·Wh → kW·kWh 로 정규화
+  - 구조 패턴: 단일 테이블 vs 채널·합계·누적 3-table JOIN
+  - source_exists() 매크로로 환경(업체 DB)에 실제 존재하는 테이블만 조건부 UNION ALL
+#}
+{%- set has_short = source_exists('raw', 'tbl_powermeter_reading')      -%}
+{%- set has_long  = source_exists('raw', 'tbl_powermeter_reading_long') -%}
+{# ... 나머지 7개 변형도 동일 패턴으로 감지 #}
+
+with empty as (
+    {# 모든 src CTE 가 맞춰 정규화될 표준 컬럼 스키마 정의 #}
+    select
+        null::int4 as sensor_id,
+        null::float8 as voltage_phase1_v, null::float8 as voltage_phase2_v, null::float8 as voltage_phase3_v,
+        null::float8 as voltage_ln_avg_v,
+        null::float8 as current_phase1_a, null::float8 as current_total_a,
+        null::float8 as power_total_kw,
+        null::float8 as power_factor,
+        null::float8 as energy_kwh,
+        null::timestamptz as measured_at
+    where false
+)
+
+{# ── 약어형 + kW (변환 없음) ── #}
+{% if has_short %}
+, src_short as (
+    select
+        sensor_id,
+        v1::float8 as voltage_phase1_v, v2::float8 as voltage_phase2_v, v3::float8 as voltage_phase3_v,
+        vln::float8 as voltage_ln_avg_v,
+        i1::float8 as current_phase1_a, it::float8 as current_total_a,
+        kw::float8 as power_total_kw,
+        pf::float8 as power_factor,
+        kwh::float8 as energy_kwh,
+        dt_insert as measured_at
+    from {{ source('raw', 'tbl_powermeter_reading') }}
+)
+{% endif %}
+
+{# ── 서술형 + W (단위 정규화 필요) ── #}
+{% if has_long %}
+, src_long as (
+    select
+        sensor_id,
+        phase_a_voltage_magnitude::float8 as voltage_phase1_v,
+        phase_b_voltage_magnitude::float8 as voltage_phase2_v,
+        phase_c_voltage_magnitude::float8 as voltage_phase3_v,
+        (phase_a_voltage_magnitude + phase_b_voltage_magnitude + phase_c_voltage_magnitude)::float8 / 3 as voltage_ln_avg_v,
+        phase_a_current_magnitude::float8 as current_phase1_a,
+        (phase_a_current_magnitude + phase_b_current_magnitude + phase_c_current_magnitude)::float8 as current_total_a,
+        total_active_power::float8 / 1000 as power_total_kw,   -- W → kW
+        total_power_factor::float8 as power_factor,
+        active_energy::float8 / 1000 as energy_kwh,            -- Wh → kWh
+        dt_insert as measured_at
+    from {{ source('raw', 'tbl_powermeter_reading_long') }}
+)
+{% endif %}
+
+{# ── 나머지 변형(3-table JOIN, 단일 테이블 내 컬럼 분기 등)도 같은 패턴으로 표준 스키마 정규화 ── #}
+
+select * from empty
+{% if has_short %} union all select * from src_short {% endif %}
+{% if has_long %}  union all select * from src_long  {% endif %}
+{# ... #}
+{% endmacro %}`,
+          },
+          {
+            title: 'mart_powermeter_15min — incremental mart + TimescaleDB hypertable post_hook',
+            description:
+              'delete+insert 증분 적재 + post_hook 으로 hypertable·인덱스 자동 생성. 1년차 TimescaleDB 인프라 위에서 mart 가 직접 hypertable 로 동작.',
+            language: 'sql',
+            code: `{{ config(
+    materialized='incremental',
+    unique_key=['sensor_id', 'bucket_15min'],
+    incremental_strategy='delete+insert',
+    on_schema_change='append_new_columns',
+    post_hook=[
+        "SELECT create_hypertable('{{ this }}', 'bucket_15min',
+            chunk_time_interval => interval '1 day',
+            if_not_exists => true, migrate_data => true)",
+        "CREATE INDEX IF NOT EXISTS idx_{{ this.name }}_sensor_bucket
+            ON {{ this }} (sensor_id, bucket_15min)"
+    ]
+) }}
+
+with cleaned as (
+    select * from {{ ref('int_powermeter_cleaned') }}
+    {% if is_incremental() %}
+    where measured_at >= (select max(bucket_15min) from {{ this }})
+    {% endif %}
+),
+
+sensor_info as (
+    select * from {{ source('raw', 'tbl_sensor_meta') }}
+)
+
+select
+    c.sensor_id,
+    max(s.name) as name,
+    max(s.site) as site,
+    {{ time_bucket('15 minutes', 'c.measured_at') }} as bucket_15min,
+
+    avg(c.voltage_ln_avg_v) as avg_voltage_ln_v,
+    avg(c.voltage_ll_avg_v) as avg_voltage_ll_v,
+
+    avg(c.current_total_a) as avg_current_a,
+    max(c.current_total_a) as max_current_a,
+
+    avg(c.power_total_kw) as avg_power_kw,
+    max(c.power_total_kw) as max_power_kw,
+
+    -- 15분 구간 사용량 = last − first (카운터 리셋 시 0 으로 클램프)
+    greatest(last(c.energy_kwh, c.measured_at) - first(c.energy_kwh, c.measured_at), 0) as delta_kwh,
+
+    -- 피크전력 (15분 kWh × 4 = kW 환산)
+    greatest(last(c.energy_kwh, c.measured_at) - first(c.energy_kwh, c.measured_at), 0) * 4 as demand_kw,
+
+    avg(c.power_factor) as avg_power_factor,
+    count(*) as reading_count
+from cleaned c
+left join sensor_info s on c.sensor_id = s.sensor_id
+group by c.sensor_id, {{ time_bucket('15 minutes', 'c.measured_at') }}`,
+          },
+        ],
+      },
+      {
+        slug: 'airflow',
+        title: 'Airflow DAG · 멀티테넌트 동적 스케줄링',
+        icon: 'pi pi-clock',
+        headline:
+          'Cosmos DbtTaskGroup 으로 dbt manifest 에서 모델을 task 로 자동 변환하고, 업체별 보유 센서 태그로 모델을 선택 실행하는 동적 멀티테넌트 DAG 패턴입니다.',
+        note: [
+          'load_clients() 로 마스터 DB 에서 업체 목록을 읽어 글로벌 네임스페이스에 DAG 를 동적 등록 — 신규 업체 추가 시 코드 변경 없이 DAG 자동 생성됩니다.',
+          'tag-based select(`tag:powermeter` 등)로 업체가 보유한 센서 종류의 모델만 실행 — 불필요한 모델·테스트를 스킵해 실행 시간·DB 부하를 절감합니다.',
+          '테넌트별 3분 간격 staggered cron + Airflow Pool 로 동시 fork·동시 쓰기 부하를 분산·캡 — 공유 DB 호스트의 WAL 버스트와 replica replay 충돌을 사전 차단합니다.',
+        ],
+        snippets: [
+          {
+            title: 'create_dag — 업체별 동적 DAG 생성 (Cosmos + tag-based select)',
+            description:
+              'DbtTaskGroup 으로 dbt 모델을 task 로 자동 변환, 업체 보유 센서 태그로 모델 선택 실행, staggered cron + Pool 로 부하 분산.',
+            language: 'python',
+            code: `"""dbt 모델을 업체별로 분리해 매일 새벽 staggered 스케줄로 실행하는 동적 멀티테넌트 DAG.
+
+각 업체 DB 는 보유 센서 종류가 다르므로(예: powermeter+solar / flow+thd),
+업체 메타에서 보유 센서 태그를 읽어 해당 dbt 모델만 선택 실행한다.
+"""
+import os
+from datetime import datetime, timedelta
+from pathlib import Path
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from cosmos import (
+    DbtTaskGroup, ExecutionConfig, ProfileConfig, ProjectConfig, RenderConfig,
+)
+from cosmos.constants import ExecutionMode, InvocationMode, LoadMode
+from cosmos.profiles import PostgresUserPasswordProfileMapping
+
+from utils.dag_utils import load_clients, check_connection
+
+DBT_PROJECT_DIR = os.environ["DBT_PROJECT_PATH"]
+DBT_MANIFEST_PATH = Path(DBT_PROJECT_DIR) / "target" / "manifest.json"
+DBT_EXECUTABLE_PATH = f"{os.environ['DBT_VENV_PATH']}/bin/dbt"
+# 공유 PG 호스트 동시 쓰기 캡 — Cosmos 가 모델 1개 = 태스크 1개로 만들기 때문에
+# worker_concurrency × worker 수만큼 동시 쓰기가 폭증하는 것을 Pool 슬롯으로 제어.
+DBT_WRITE_POOL = "dbt_db_write"
+
+default_args = {
+    "retries": 2,
+    "retry_delay": timedelta(minutes=5),
+    # 정상 dbt 태스크는 수 초~수 분 — 30분 초과 시 hang 으로 판단해 강제 종료 + retry.
+    "execution_timeout": timedelta(minutes=30),
+}
+
+
+def _staggered_schedule(offset_min: int) -> str:
+    """00:30 KST(15:30 UTC) 기준 offset_min 분만큼 밀린 cron 생성 (테넌트별 시작 분산)."""
+    base_minute, base_hour = 30, 15
+    total = base_minute + offset_min
+    return f"{total % 60} {(base_hour + total // 60) % 24} * * *"
+
+
+def create_dag(client_id: str, conn_id: str, sensors: list[str], offset_min: int = 0) -> DAG:
+    """업체별 DAG 동적 생성. 보유 센서 태그 기반으로 모델 선택 실행."""
+    dag = DAG(
+        dag_id=f"dbt_sensor_{client_id}",
+        schedule=_staggered_schedule(offset_min),
+        start_date=datetime(2026, 1, 1),
+        catchup=False,
+        max_active_runs=1,
+        tags=["dbt", "sensor", "analytics", client_id],
+        default_args=default_args,
+    )
+
+    # 업체 보유 센서 태그 + common(공통 mart) 선택
+    select_tags = [f"tag:{s}" for s in sensors] + ["tag:common"]
+
+    with dag:
+        verify_conn = PythonOperator(
+            task_id="verify_connection",
+            python_callable=check_connection,
+            op_kwargs={"conn_id": conn_id},
+        )
+
+        dbt_group = DbtTaskGroup(
+            group_id="dbt_sensor_analytics",
+            project_config=ProjectConfig(
+                dbt_project_path=Path(DBT_PROJECT_DIR),
+                manifest_path=DBT_MANIFEST_PATH,
+                dbt_vars={"sensor_types": sensors},
+            ),
+            profile_config=ProfileConfig(
+                profile_name="sensor_analytics",
+                target_name="prod",
+                profile_mapping=PostgresUserPasswordProfileMapping(
+                    conn_id=conn_id,
+                    profile_args={"schema": "public", "threads": 4},
+                ),
+            ),
+            render_config=RenderConfig(
+                load_method=LoadMode.DBT_MANIFEST,
+                select=select_tags,
+                test_behavior="after_all",
+                emit_datasets=False,
+            ),
+            execution_config=ExecutionConfig(
+                execution_mode=ExecutionMode.LOCAL,
+                dbt_executable_path=DBT_EXECUTABLE_PATH,
+                invocation_mode=InvocationMode.SUBPROCESS,
+            ),
+            operator_args={
+                "dbt_cmd_flags": ["--target-path", f"/tmp/dbt_target/{client_id}"],
+                "pool": DBT_WRITE_POOL,  # 공유 호스트 동시 쓰기 캡
+            },
+        )
+
+        verify_conn >> dbt_group
+
+    return dag
+
+
+# 마스터 DB 에서 업체 목록 동적 로딩 — 신규 추가 시 코드 변경 없이 DAG 생성.
+# 정렬로 테넌트 순서 고정 → 신규 업체 추가에도 기존 스케줄 변동 최소화.
+CLIENTS = sorted(load_clients(), key=lambda c: c["id"])
+
+# 업체별 DAG 글로벌 등록 + 3분 간격 staggered → 동시 fork 부하 분산.
+for i, client in enumerate(CLIENTS):
+    globals()[f"dbt_sensor_{client['id']}"] = create_dag(
+        client["id"], client["conn_id"], client["sensors"], offset_min=i * 3,
+    )`,
+          },
+        ],
+      },
+      {
+        slug: 'fastapi',
+        title: 'FastAPI · Multi-Tenant CBAM API',
+        icon: 'pi pi-bolt',
+        headline:
+          '하나의 API 인스턴스가 X-Tenant-ID 헤더로 업체별 DB 엔진을 동적 라우팅하고, 1·2년차에 구축한 Read Replica 를 자동 fallback 하는 멀티테넌트 패턴 위에 CBAM 도메인 라우터를 얹었습니다.',
+        note: [
+          'TenantMiddleware → request.state → FastAPI Depends 체인으로 모든 라우터에 tenant_id·세션이 일관 주입 — 도메인 핸들러는 멀티테넌트 분기를 신경 쓰지 않습니다.',
+          'EngineRegistry 가 테넌트별 read·write AsyncEngine 을 lazy 생성·캐시하고, Replica 연결 실패 시 자동으로 write 엔진으로 fallback + 1회만 Slack 알림 발송합니다.',
+          'Casbin AsyncEnforcer 기반 require_permission(resource, action) 으로 라우터마다 한 줄 RBAC — reader → writer → admin 역할 계층이 자동 상속됩니다.',
+        ],
+        snippets: [
+          {
+            title: 'CBAM Items Router — pydantic + async SQLAlchemy + Casbin RBAC',
+            description:
+              'pydantic 모델로 입력 검증·OpenAPI 자동 생성, Depends 로 Replica/Primary 세션 자동 라우팅, Casbin require_permission 으로 라우터 한 줄 RBAC.',
+            language: 'python',
+            code: `"""CBAM 품목(Item) CRUD — pydantic + async SQLAlchemy 2.0 + Casbin RBAC."""
+
+router = APIRouter()
+
+
+# ── pydantic 스키마 (자동 OpenAPI 생성 + 입력 검증) ──
+
+class ItemCreate(BaseModel):
+    item_code: str | None = None
+    cn_code: str | None = None              # EU CN(Combined Nomenclature) 코드
+    name: str
+    source_type: str = "internal"           # internal | external
+    unit: str = "kg"
+    unit_weight_kg: float | None = None
+    is_cbam_target: bool = True
+    routing_id: int | None = None
+    group_id: int | None = None
+
+    @model_validator(mode="after")
+    def _validate_unit_weight(self):
+        if self.unit == "pcs" and not self.unit_weight_kg:
+            raise ValueError("단위가 'pcs' 인 경우 unit_weight_kg 는 필수입니다")
+        if self.unit_weight_kg is not None and self.unit_weight_kg <= 0:
+            raise ValueError("unit_weight_kg 는 0 보다 커야 합니다")
+        return self
+
+
+class ItemResponse(BaseModel):
+    id: int
+    item_code: str | None
+    name: str
+    source_type: str
+    unit: str
+    is_cbam_target: bool
+    routing_id: int | None
+    group_id: int | None
+    is_active: bool
+    model_config = {"from_attributes": True}
+
+
+# ── 라우터 ──
+
+@router.get("/items", response_model=list[ItemResponse])
+async def list_items(
+    is_cbam_target: bool | None = Query(None),
+    group_id: int | None = Query(None),
+    session: AsyncSession = Depends(get_read_session),                # ← Replica 라우팅
+    _auth: AuthContext = Depends(require_permission("cbam", "read")), # ← Casbin RBAC
+):
+    stmt = (
+        select(ItemModel)
+        .where(ItemModel.is_active.is_(True))
+        .order_by(ItemModel.id)
+    )
+    if is_cbam_target is not None:
+        stmt = stmt.where(ItemModel.is_cbam_target == is_cbam_target)
+    if group_id is not None:
+        stmt = stmt.where(ItemModel.group_id == group_id)
+    return (await session.execute(stmt)).scalars().all()
+
+
+@router.post("/items", response_model=ItemResponse, status_code=201)
+async def create_item(
+    payload: ItemCreate,
+    session: AsyncSession = Depends(get_db_session),                   # ← Primary 라우팅
+    _auth: AuthContext = Depends(require_permission("cbam", "write")),
+):
+    # CBAM 대상 품목은 그룹·라우팅이 필수 — 배출량 산정 자동화의 사전 조건
+    if payload.is_cbam_target and (payload.group_id is None or payload.routing_id is None):
+        raise HTTPException(422, "CBAM 대상 품목은 품목군·기본 라우팅이 필수입니다")
+
+    # 비대상 그룹에 대상 품목 매핑 차단 — 비대상 흡수 로직과의 정합성 보장
+    if payload.group_id is not None:
+        group = (await session.execute(
+            select(ItemGroupModel).where(ItemGroupModel.id == payload.group_id)
+        )).scalar_one_or_none()
+        if group is None:
+            raise HTTPException(400, f"품목군 #{payload.group_id} 을(를) 찾을 수 없습니다")
+        if payload.is_cbam_target and group.cbam_yn == "N":
+            raise HTTPException(409, f"품목군 #{group.id} 은 비대상 — CBAM 대상 품목 매핑 불가")
+
+    item = ItemModel(**payload.model_dump())
+    session.add(item)
+    await session.flush()
+    await session.refresh(item)
+    return item   # pydantic from_attributes 로 ItemResponse 자동 직렬화`,
+          },
+        ],
+        mediaAbove: true,
+        media: [
+          {
+            label: 'FastAPI 아키텍처',
+            src: `${import.meta.env.BASE_URL}architectures/fastapi-cbam-architecture.svg`,
+            alt: 'Multi-Tenant FastAPI Gateway · CBAM API 아키텍처',
+            caption: 'Multi-Tenant FastAPI Gateway — Middleware Chain → Depends 체인 → 테넌트별 read/write 엔진 자동 라우팅 (Replica fallback 포함)',
+          },
         ],
       },
     ],

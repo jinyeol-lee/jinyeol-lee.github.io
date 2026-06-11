@@ -360,6 +360,61 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
               </li>
             </ol>
           </div>
+          <div
+            v-if="section.media?.length && section.mediaAbove"
+            class="mb-6 space-y-8"
+          >
+            <section
+              v-for="(group, gIdx) in groupMedia(section.media)"
+              :key="gIdx"
+            >
+              <div
+                class="mb-2 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400"
+              >
+                {{ group.label }}
+                <span
+                  v-if="group.items.length > 1"
+                  class="ml-1 normal-case text-surface-400"
+                >
+                  ({{ group.items.length }})
+                </span>
+              </div>
+              <div
+                :class="
+                  group.items.length > 1
+                    ? 'grid gap-3 sm:grid-cols-2'
+                    : ''
+                "
+              >
+                <figure v-for="(item, idx) in group.items" :key="idx">
+                  <div
+                    class="overflow-hidden rounded-md border border-surface-200 bg-surface-50 dark:border-surface-800 dark:bg-surface-900"
+                    :class="group.items.length > 1 ? 'aspect-video' : ''"
+                  >
+                    <ZoomableImage
+                      :src="item.src"
+                      :alt="item.alt"
+                      :fill-container="group.items.length > 1"
+                      :image-class="
+                        group.items.length > 1
+                          ? (item.fit === 'contain'
+                              ? 'block h-full w-full object-contain'
+                              : 'block h-full w-full object-cover object-top')
+                          : 'block w-full'
+                      "
+                    />
+                  </div>
+                  <figcaption
+                    v-if="item.caption"
+                    class="mt-2 text-center text-xs text-surface-500 dark:text-surface-400"
+                  >
+                    {{ item.caption }}
+                  </figcaption>
+                </figure>
+              </div>
+            </section>
+          </div>
+
           <div class="flex flex-col gap-4">
             <CodeBlock
               v-for="snippet in section.snippets"
@@ -371,7 +426,10 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
             />
           </div>
 
-          <div v-if="section.media?.length" class="mt-6 space-y-8">
+          <div
+            v-if="section.media?.length && !section.mediaAbove"
+            class="mt-6 space-y-8"
+          >
             <section
               v-for="(group, gIdx) in groupMedia(section.media)"
               :key="gIdx"
