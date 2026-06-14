@@ -5,6 +5,17 @@ import SkillBadge from '@/components/SkillBadge.vue'
 import CodeBlock from '@/components/CodeBlock.vue'
 import FloatingToc from '@/components/FloatingToc.vue'
 import MetricBar from '@/components/MetricBar.vue'
+import Tabs from 'primevue/tabs'
+import TabList from 'primevue/tablist'
+import Tab from 'primevue/tab'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
+
+function tabLabel(title: string): string {
+  // "X — Y (Z)" 형태에서 ' — ' 앞 부분만 추출 (탭 헤더용 짧은 라벨)
+  const sep = title.indexOf(' — ')
+  return sep > 0 ? title.slice(0, sep) : title
+}
 import ZoomableImage from '@/components/ZoomableImage.vue'
 import {
   getProjectsByYear,
@@ -402,7 +413,35 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
               </li>
             </ol>
           </div>
-          <div class="flex flex-col gap-4">
+          <Tabs
+            v-if="(project.snippets?.length ?? 0) > 1"
+            :value="'0'"
+          >
+            <TabList>
+              <Tab
+                v-for="(s, i) in project.snippets"
+                :key="i"
+                :value="String(i)"
+              >
+                {{ tabLabel(s.title) }}
+              </Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel
+                v-for="(s, i) in project.snippets"
+                :key="i"
+                :value="String(i)"
+              >
+                <CodeBlock
+                  :title="s.title"
+                  :description="s.description"
+                  :language="s.language"
+                  :code="s.code"
+                />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+          <div v-else class="flex flex-col gap-4">
             <CodeBlock
               v-for="snippet in project.snippets"
               :key="snippet.title"
@@ -512,7 +551,32 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
             </section>
           </div>
 
-          <div class="flex flex-col gap-4">
+          <Tabs v-if="section.snippets.length > 1" :value="'0'">
+            <TabList>
+              <Tab
+                v-for="(s, i) in section.snippets"
+                :key="i"
+                :value="String(i)"
+              >
+                {{ tabLabel(s.title) }}
+              </Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel
+                v-for="(s, i) in section.snippets"
+                :key="i"
+                :value="String(i)"
+              >
+                <CodeBlock
+                  :title="s.title"
+                  :description="s.description"
+                  :language="s.language"
+                  :code="s.code"
+                />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+          <div v-else class="flex flex-col gap-4">
             <CodeBlock
               v-for="snippet in section.snippets"
               :key="snippet.title"
