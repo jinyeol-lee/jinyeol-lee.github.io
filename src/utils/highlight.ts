@@ -27,7 +27,7 @@ const KEYWORDS = [
 ]
 
 const METRIC_RE =
-  /(\d+(?:\.\d+)?\s*(?:%|배|개월|개|시간|분|일|GB|MB|KB|TB|건|회))/g
+  /(\d+(?:\.\d+)?(?:~\d+(?:\.\d+)?)?\s*(?:%|배|개월|개|시간|분|일|GB|MB|KB|TB|건|회))/g
 
 function escapeHtml(s: string): string {
   return s

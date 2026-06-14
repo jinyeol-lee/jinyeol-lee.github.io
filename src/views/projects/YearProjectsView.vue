@@ -4,6 +4,7 @@ import Card from 'primevue/card'
 import SkillBadge from '@/components/SkillBadge.vue'
 import CodeBlock from '@/components/CodeBlock.vue'
 import FloatingToc from '@/components/FloatingToc.vue'
+import MetricBar from '@/components/MetricBar.vue'
 import ZoomableImage from '@/components/ZoomableImage.vue'
 import {
   getProjectsByYear,
@@ -135,6 +136,22 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
                 <span v-html="highlight(role)" />
               </li>
             </ul>
+          </div>
+
+          <div
+            v-if="project.metrics?.length"
+            class="mt-5 rounded-md border border-surface-200 bg-surface-50/50 px-4 py-4 dark:border-surface-800 dark:bg-surface-900/30"
+          >
+            <div class="mb-4 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
+              Before / After
+            </div>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <MetricBar
+                v-for="(m, i) in project.metrics"
+                :key="i"
+                v-bind="m"
+              />
+            </div>
           </div>
         </template>
       </Card>

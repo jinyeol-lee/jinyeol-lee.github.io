@@ -32,7 +32,7 @@ export const years: Record<YearKey, YearMeta> = {
     range: '2023.06 ~ 2024.05',
     routeName: 'projects-year-1',
     summary:
-      'TimescaleDB 하이퍼테이블·연속집계 도입으로 IIoT 시계열 데이터 조회 5배·집계 쿼리 82% 개선, 제조 현장 실시간 관제 시스템 토대 구축.',
+      'TimescaleDB 하이퍼테이블·연속집계·압축 정책 도입으로 IIoT 시계열 데이터 조회 2~3배 향상·집계 쿼리 70% 이상 단축·저장 공간 80% 이상 절감, 제조 현장 실시간 관제 시스템 토대 구축.',
     showcase: {
       title: 'Dashboard Showcase',
       description:
@@ -96,6 +96,17 @@ export interface ProjectBackground {
   goal?: string | string[]
 }
 
+export interface ProjectMetric {
+  label: string
+  beforeValue: number
+  beforeDisplay: string
+  afterValue: number
+  afterDisplay: string
+  improvement?: string
+  /** Y 축 tick 단위. 기본은 시간(ms/s 자동 변환). 'GB' | '%' 등 직접 지정 가능. */
+  unit?: string
+}
+
 export interface Project {
   slug: string
   title: string
@@ -111,6 +122,7 @@ export interface Project {
   codeSections?: CodeSection[]
   techRationale?: TechRationale | TechRationale[]
   background?: ProjectBackground
+  metrics?: ProjectMetric[]
 }
 
 export const projects: Project[] = [
@@ -137,11 +149,39 @@ export const projects: Project[] = [
         '일·월 단위 집계 처리 자동화로 운영 공수 절감 및 대시보드 응답성 확보',
       ],
     },
-    outcome: '시계열 데이터 조회 쿼리 속도 5배 향상 및 집계 쿼리 속도 82% 개선',
+    outcome:
+      'TimescaleDB 하이퍼테이블 · 연속집계 · 압축 정책 도입으로 시계열 조회 평균 2~3배 향상, 집계 쿼리 70% 이상 단축, 데이터 저장 공간 80% 이상 절감',
+    metrics: [
+      {
+        label: '기본 시계열 조건 조회 (RAW 추출)',
+        beforeValue: 450,
+        beforeDisplay: '450ms',
+        afterValue: 150,
+        afterDisplay: '150ms',
+        improvement: '약 3× 향상',
+      },
+      {
+        label: '월별 통계/집계 (분 단위 · 1년치)',
+        beforeValue: 1800,
+        beforeDisplay: '1.8s',
+        afterValue: 540,
+        afterDisplay: '540ms',
+        improvement: '약 70% 단축',
+      },
+      {
+        label: '스토리지 디스크 용량',
+        beforeValue: 10,
+        beforeDisplay: '10GB',
+        afterValue: 2,
+        afterDisplay: '2GB',
+        improvement: '약 80% 절감',
+        unit: 'GB',
+      },
+    ],
     roles: [
-      'TimescaleDB 의 하이퍼테이블 및 하이퍼 함수를 사용하여 대용량 시계열 데이터 조회 성능 5배 최적화',
-      '연속집계 (Cagg) 기능을 활용한 대용량 통계/집계 쿼리 수행 속도 82% 개선',
-      '데이터 파티셔닝 및 압축 정책 설정을 통한 데이터 저장 및 관리 정책 수립',
+      'TimescaleDB 하이퍼테이블 아키텍처 및 하이퍼 함수 도입으로 대용량 시계열 데이터 조회 속도 평균 2~3배 향상',
+      '연속집계 (Continuous Aggregates) 기능을 활용하여 수백만 건 규모의 통계/집계 쿼리 수행 시간 70% 이상 단축',
+      '하이퍼테이블 청크 (Chunk) 단위 압축 (Compression) 정책 수립으로 데이터 저장 공간 80% 이상 절감',
       'Grafana 를 활용하여 제조 현장 맞춤형 IIoT 센서 데이터 실시간 대시보드 구축',
     ],
     media: [
