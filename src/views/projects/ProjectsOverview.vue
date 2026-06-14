@@ -3,68 +3,12 @@ import { RouterLink } from 'vue-router'
 import Card from 'primevue/card'
 import SkillBadge from '@/components/SkillBadge.vue'
 import { yearList, getProjectsByYear } from '@/data/projects'
+import { highlight } from '@/utils/highlight'
 
 const summaries = yearList.map((y) => ({
   ...y,
   projects: getProjectsByYear(y.key),
 }))
-
-const KEYWORDS = [
-  'TimescaleDB',
-  'Continuous Aggregate',
-  'Cagg',
-  'Hypertable',
-  '하이퍼테이블',
-  '하이퍼 함수',
-  '연속집계',
-  'PostgreSQL',
-  'PgBouncer',
-  'Streaming Replication',
-  'Replica',
-  'Slave DB',
-  'Grafana Alloy',
-  'Grafana',
-  'VictoriaMetrics',
-  'Prometheus',
-  'Airflow',
-  'dbt',
-  'FastAPI',
-  'Vue',
-  'CBAM',
-  '1인 풀스택',
-  '풀스택',
-  '사전 예방',
-]
-
-const METRIC_RE = /(\d+(?:\.\d+)?\s*(?:%|배|개월|개|시간|분|일|GB|MB|KB|TB|건|회))/g
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-}
-
-function highlight(text: string): string {
-  let out = escapeHtml(text)
-  // 1) keyword 강조 (긴 문자열부터 매칭되도록 길이 내림차순)
-  for (const kw of [...KEYWORDS].sort((a, b) => b.length - a.length)) {
-    const re = new RegExp(
-      `(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
-      'g',
-    )
-    out = out.replace(
-      re,
-      '<span class="font-semibold text-surface-900 dark:text-surface-0">$1</span>',
-    )
-  }
-  // 2) 정량 임팩트 강조
-  out = out.replace(
-    METRIC_RE,
-    '<span class="font-bold text-primary">$1</span>',
-  )
-  return out
-}
 </script>
 
 <template>
@@ -77,13 +21,13 @@ function highlight(text: string): string {
     >
       <Card class="h-full">
         <template #title>
-          <span class="text-xl font-bold text-surface-900 dark:text-surface-0">
-            {{ item.label }}
-          </span>
-        </template>
-        <template #subtitle>
-          <span class="text-xs uppercase tracking-wider text-surface-500 dark:text-surface-400">
-            {{ item.range }}
+          <span class="flex flex-nowrap items-baseline gap-3 whitespace-nowrap">
+            <span class="text-xl font-bold text-surface-900 dark:text-surface-0">
+              {{ item.label }}
+            </span>
+            <span class="text-xs uppercase tracking-wider text-surface-500 dark:text-surface-400">
+              {{ item.range }}
+            </span>
           </span>
         </template>
         <template #content>

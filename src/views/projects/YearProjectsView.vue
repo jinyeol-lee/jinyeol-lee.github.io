@@ -12,6 +12,7 @@ import {
   type TechRationale,
   type YearKey,
 } from '@/data/projects'
+import { highlight } from '@/utils/highlight'
 
 function asRationaleList(
   r: TechRationale | TechRationale[] | undefined,
@@ -100,9 +101,10 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
             <SkillBadge v-for="tag in project.tags" :key="tag" :name="tag" />
           </div>
 
-          <p class="mt-5 text-sm leading-relaxed text-surface-700 dark:text-surface-300">
-            {{ meta.summary }}
-          </p>
+          <p
+            class="mt-5 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+            v-html="highlight(meta.summary)"
+          />
 
           <div
             v-if="project.outcome"
@@ -111,9 +113,10 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
             <div class="mb-1 text-xs font-semibold uppercase tracking-wider text-primary">
               성과
             </div>
-            <div class="text-sm leading-relaxed text-surface-800 dark:text-surface-100">
-              {{ project.outcome }}
-            </div>
+            <div
+              class="text-sm leading-relaxed text-surface-800 dark:text-surface-100"
+              v-html="highlight(project.outcome)"
+            />
           </div>
 
           <div v-if="project.roles?.length" class="mt-5">
@@ -129,7 +132,7 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
                 class="flex gap-2 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
               >
                 <i class="pi pi-check mt-1 text-xs text-primary" aria-hidden="true" />
-                <span>{{ role }}</span>
+                <span v-html="highlight(role)" />
               </li>
             </ul>
           </div>
