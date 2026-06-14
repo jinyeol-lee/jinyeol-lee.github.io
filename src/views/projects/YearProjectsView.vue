@@ -29,6 +29,9 @@ const tocItems = computed(() => {
   const list: { id: string; label: string; level: number }[] = []
   for (const p of items.value) {
     list.push({ id: `project-${p.slug}`, label: p.title, level: 0 })
+    if (p.background) {
+      list.push({ id: `background-${p.slug}`, label: '프로젝트 배경', level: 0 })
+    }
     if (p.media?.length) {
       list.push({ id: `arch-${p.slug}`, label: '아키텍처', level: 0 })
     }
@@ -72,20 +75,6 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
 
 <template>
   <div>
-    <div
-      class="mb-8 rounded-lg border border-surface-200 bg-surface-50 p-5 dark:border-surface-800 dark:bg-surface-900/40"
-    >
-      <div class="mb-1 text-xs uppercase tracking-wider text-surface-500 dark:text-surface-400">
-        {{ meta.range }}
-      </div>
-      <h2 class="mb-2 text-xl font-semibold text-surface-900 dark:text-surface-0">
-        {{ meta.label }}
-      </h2>
-      <p class="text-sm leading-relaxed text-surface-700 dark:text-surface-300">
-        {{ meta.summary }}
-      </p>
-    </div>
-
     <div v-if="items.length === 0" class="py-10 text-center text-surface-500">
       등록된 프로젝트가 없습니다.
     </div>
@@ -107,12 +96,17 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
           </span>
         </template>
         <template #content>
-          <div class="mb-4 flex flex-wrap gap-2">
+          <div class="flex flex-wrap gap-2">
             <SkillBadge v-for="tag in project.tags" :key="tag" :name="tag" />
           </div>
 
+          <p class="mt-5 text-sm leading-relaxed text-surface-700 dark:text-surface-300">
+            {{ meta.summary }}
+          </p>
+
           <div
-            class="mb-5 rounded-md border-l-4 border-primary bg-primary-50 px-4 py-3 dark:bg-primary-950/30"
+            v-if="project.outcome"
+            class="mt-5 rounded-md border-l-4 border-primary bg-primary-50 px-4 py-3 dark:bg-primary-950/30"
           >
             <div class="mb-1 text-xs font-semibold uppercase tracking-wider text-primary">
               성과
@@ -122,7 +116,7 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
             </div>
           </div>
 
-          <div>
+          <div v-if="project.roles?.length" class="mt-5">
             <div
               class="mb-2 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400"
             >
@@ -138,6 +132,89 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
                 <span>{{ role }}</span>
               </li>
             </ul>
+          </div>
+        </template>
+      </Card>
+
+      <Card
+        v-if="project.background"
+        :id="`background-${project.slug}`"
+        class="scroll-mt-24"
+      >
+        <template #title>
+          <span class="flex items-center gap-2 text-xl font-bold text-surface-900 dark:text-surface-0">
+            <i class="pi pi-bullseye text-base text-primary" aria-hidden="true" />
+            프로젝트 배경
+          </span>
+        </template>
+        <template #content>
+          <div class="flex flex-col gap-5">
+            <section v-if="project.background.context">
+              <div class="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-surface-700 dark:text-surface-200">
+                <i class="pi pi-globe text-sm text-primary" aria-hidden="true" />
+                배경
+              </div>
+              <ul
+                v-if="Array.isArray(project.background.context)"
+                class="space-y-2 pl-1"
+              >
+                <li
+                  v-for="(item, i) in project.background.context"
+                  :key="i"
+                  class="flex gap-2 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+                >
+                  <i class="pi pi-circle-fill mt-1.5 text-[5px] text-primary" aria-hidden="true" />
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+              <p v-else class="text-sm leading-relaxed text-surface-700 dark:text-surface-300">
+                {{ project.background.context }}
+              </p>
+            </section>
+            <section v-if="project.background.problem">
+              <div class="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-surface-700 dark:text-surface-200">
+                <i class="pi pi-exclamation-triangle text-sm text-primary" aria-hidden="true" />
+                문제
+              </div>
+              <ul
+                v-if="Array.isArray(project.background.problem)"
+                class="space-y-2 pl-1"
+              >
+                <li
+                  v-for="(item, i) in project.background.problem"
+                  :key="i"
+                  class="flex gap-2 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+                >
+                  <i class="pi pi-circle-fill mt-1.5 text-[5px] text-primary" aria-hidden="true" />
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+              <p v-else class="text-sm leading-relaxed text-surface-700 dark:text-surface-300">
+                {{ project.background.problem }}
+              </p>
+            </section>
+            <section v-if="project.background.goal">
+              <div class="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-surface-700 dark:text-surface-200">
+                <i class="pi pi-flag text-sm text-primary" aria-hidden="true" />
+                목표
+              </div>
+              <ul
+                v-if="Array.isArray(project.background.goal)"
+                class="space-y-2 pl-1"
+              >
+                <li
+                  v-for="(item, i) in project.background.goal"
+                  :key="i"
+                  class="flex gap-2 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+                >
+                  <i class="pi pi-circle-fill mt-1.5 text-[5px] text-primary" aria-hidden="true" />
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+              <p v-else class="text-sm leading-relaxed text-surface-700 dark:text-surface-300">
+                {{ project.background.goal }}
+              </p>
+            </section>
           </div>
         </template>
       </Card>

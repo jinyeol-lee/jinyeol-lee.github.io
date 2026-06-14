@@ -90,6 +90,12 @@ export interface TechRationale {
   reasons: string[]
 }
 
+export interface ProjectBackground {
+  context?: string | string[]
+  problem?: string | string[]
+  goal?: string | string[]
+}
+
 export interface Project {
   slug: string
   title: string
@@ -104,6 +110,7 @@ export interface Project {
   snippetsNote?: string[]
   codeSections?: CodeSection[]
   techRationale?: TechRationale | TechRationale[]
+  background?: ProjectBackground
 }
 
 export const projects: Project[] = [
@@ -113,6 +120,23 @@ export const projects: Project[] = [
     period: '2023.11 ~ 2024.09',
     year: 1,
     tags: ['TimescaleDB', 'Grafana', 'SQL'],
+    background: {
+      context: [
+        '사내 신규 프로젝트로 총 11개 공장에 IIoT 기반 ICT 인프라를 구축하는 과제 진행',
+        '팀에서 OPC UA 서버 개발, TimescaleDB · Grafana 오픈소스 스택을 도입해 현장 PLC·센서 데이터의 수집부터 적재·시각화까지 파이프라인을 구성',
+        '본인 역할: 수집된 IIoT 시계열 데이터를 시각화해 사용자 요구에 맞는 통합 관제 대시보드를 11개 공장에 맞춤 제공',
+      ],
+      problem: [
+        '데이터가 누적될수록 통합 관제 대시보드에서 사용하는 시계열 조회·집계 쿼리의 응답 속도가 점점 느려져 실시간 시각화에 지장',
+        '적재된 시계열 데이터가 빠르게 누적되면서 스토리지 비용·오래된 데이터 청크 조회 성능 저하·수동 데이터 관리 공수가 동시에 부담으로 작용',
+        '일·월 단위 통계 집계가 매 조회 시점에 즉시 처리되어 대시보드 응답 시간과 운영 공수 모두 가중',
+      ],
+      goal: [
+        '시계열 조회·집계 쿼리 최적화로 누적 데이터 환경에서도 안정적 응답 속도 유지',
+        '데이터 파티셔닝·압축 정책 자동화로 스토리지 효율과 누적 데이터 조회 성능 동시 확보',
+        '일·월 단위 집계 처리 자동화로 운영 공수 절감 및 대시보드 응답성 확보',
+      ],
+    },
     outcome: '시계열 데이터 조회 쿼리 속도 5배 향상 및 집계 쿼리 속도 82% 개선',
     roles: [
       'TimescaleDB 의 하이퍼테이블 및 하이퍼 함수를 사용하여 대용량 시계열 데이터 조회 성능 5배 최적화',
@@ -278,6 +302,13 @@ WHERE compression_status = 'Compressed';`,
       'Prometheus',
       'VictoriaMetrics',
     ],
+    background: {
+      context:
+        '1년차에 구축한 IIoT 데이터 인프라가 운영 단계에 들어서며 50개 제조업체 · 2,000여 개 센서의 트래픽이 누적되었고, 업체 수 증가에 대비해 추가한 신규 클라우드 DB 서버는 사양 부족으로 CPU 가 100% 까지 치솟는 한계를 보였습니다. 또한 현장 Edge 장비는 호스트 자원 문제로 다운 장애가 반복되었지만 사후 대응만 가능한 모니터링 체계에 머물러 있었습니다.',
+      problem:
+        '메인 DB CPU 과부하 · 클라우드 아웃바운드 네트워크 트래픽 초과 비용 · Edge 장비 다운 사전 감지 부재 세 가지 운영 위험이 동시에 누적되어, 단순한 스케일 업이나 수동 모니터링 확장만으로는 비용과 안정성을 동시에 잡기 어려웠습니다.',
+      goal: '운영 비용을 늘리지 않으면서 클라우드 DB 의 CPU·아웃바운드 트래픽 부하를 구조적으로 분리하고, Edge 장비를 포함한 전체 인프라 메트릭을 실시간 수집해 임계치 기반 자동 알림으로 사전 대응 가능한 통합 모니터링 체계를 구축하는 것을 목표로 했습니다.',
+    },
     outcome:
       '메인 DB 서버의 CPU 부하 및 네트워크 트래픽 최적화로 인프라 비용 감소, 현장 Edge 장비 다운 장애 사전 예방',
     roles: [
@@ -458,6 +489,13 @@ prometheus.scrape "alloy_self" {
     period: '2025.11 ~ 2026.06',
     year: 3,
     tags: ['Airflow', 'dbt', 'FastAPI', 'Vue.js', 'Docker', 'Nginx', 'GitLab CI/CD'],
+    background: {
+      context:
+        '1~2년차에 구축한 데이터 수집·모니터링 인프라가 안정화되면서, 누적된 시계열 데이터를 표준화·집계해 비즈니스 가치를 만들어내는 데이터 파이프라인이 다음 단계로 필요해졌습니다. 동시에 사내에서는 신규 비즈니스인 CBAM(탄소국경조정제도) 대응 서비스를 빠르게 출시해야 하는 요구가 발생했습니다.',
+      problem:
+        '다중 업체·다중 센서 데이터가 파편화된 채 누적되면서 표준화·이상치 정제·집계 처리의 운영 공수가 빠르게 늘었고, 기존 TimescaleDB Continuous Aggregate 만으로는 다양한 비즈니스 단위 집계와 파이프라인 단위 테스트 가능성을 확보하기 어려웠습니다. 또한 신규 CBAM 서비스는 백엔드·프론트엔드·인프라까지 1인이 빠르게 완성해야 하는 부담이 있었습니다.',
+      goal: 'Apache Airflow + dbt 를 도입해 스케줄링 유연성·파이프라인 테스트 가능성·표준화/정제 자동화를 동시에 확보하고, 생성형 AI 를 활용한 생산성 극대화로 FastAPI + Vue 기반 CBAM 서비스를 아키텍처 설계부터 인프라 배포까지 1인 풀스택으로 출시 가능한 형태로 완성하는 것을 목표로 했습니다.',
+    },
     outcome: '데이터 파이프라인 자동화로 운영 공수 80% 단축 및 CBAM 서비스 1인 풀스택 개발',
     roles: [
       'Apache Airflow 기반의 자동화 배치 파이프라인 및 집계 DAGs 를 구축하여 운영 공수 80% 절감',
