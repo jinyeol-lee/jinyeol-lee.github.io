@@ -210,33 +210,49 @@ export const projects: Project[] = [
         title: 'TimescaleDB Query',
         icon: 'pi pi-database',
         headline:
-          'LAG(결측 취약) → counter_agg + delta(이상치 취약) → last − first(최종 안정 패턴) 순으로 발전시켰습니다.',
+          'TimescaleDB 의 하이퍼 함수 · counter_agg · 연속집계 · 청크 압축 정책을 조합해 시계열 데이터의 조회 성능 · 집계 자동화 · 저장 효율을 동시에 확보했습니다.',
         note: [
-          'LAG 방식은 직전 행이 결측이면 산정이 불가했습니다.',
-          'TimescaleDB Toolkit 의 delta 는 결측 문제를 보완했지만, 누적 카운터 내부 상태에 의존해 스파이크성 이상치 영향이 커졌습니다.',
-          '버킷 양 끝점만 사용하는 last − first 방식이 결측·이상치 모두에 가장 안전했고, 이를 Continuous Aggregate 로 캐스케이드하여 운영에 채택했습니다.',
+          'time_bucket + 하이퍼 함수 (avg/max/last/first) 조합으로 다중 메트릭을 단일 쿼리에서 일 단위 집계.',
+          'TimescaleDB Toolkit 의 counter_agg + delta 로 카운터 메트릭의 리셋 케이스까지 자동 보정해 증분 산출.',
+          '일/월 2단 Continuous Aggregate 캐스케이드 + 자동 갱신 정책으로 매 조회 시 즉시 연산하던 통계 쿼리 부담 제거.',
+          '하이퍼테이블 청크 단위 압축(Compression) 정책으로 데이터 저장 공간 80% 이상 절감.',
         ],
         snippets: [
       {
-        title: 'time_bucket + LAG — 누적 카운터에서 일별 사용량 추출 (Grafana 동적 쿼리)',
+        title: 'time_bucket + 하이퍼 함수 — 일별 종합 센서 통계 집계',
         description:
-          '일 단위 last() 로 버킷 마지막 누적값을 뽑고 LAG 윈도우 함수로 전일 대비 차이를 계산 (Grafana 변수·시간 매크로 연결).',
+          'time_bucket 으로 일 단위 버킷팅한 뒤 avg/max/last/first 하이퍼 함수 조합으로 전압·전류·전력·에너지·역률을 단일 쿼리에서 집계. 에너지 사용량은 last − first 패턴으로 카운터 리셋도 안전하게 처리.',
         language: 'sql',
         code: `SELECT
   sensor_id,
-  time,
-  GREATEST(data - LAG(data) OVER (PARTITION BY sensor_id ORDER BY time), 0) AS delta
-FROM (
-  SELECT
-    sensor_id,
-    time_bucket('1d', dt_insert, 'Asia/Seoul') AS time,
-    last(kwh, dt_insert) AS data
-  FROM tbl_powermeter_reading
-  WHERE sensor_id IN ($sensor_id)
-    AND $__timeFilter(dt_insert)
-  GROUP BY 1, 2
-) s
-ORDER BY 2;`,
+  time_bucket('1 day', measured_at) AS bucket_day,
+
+  -- 전압 평균
+  avg(voltage_ln_avg_v) AS avg_voltage_ln_v,
+  avg(voltage_ll_avg_v) AS avg_voltage_ll_v,
+
+  -- 전류 평균/최대
+  avg(current_total_a) AS avg_current_a,
+  max(current_total_a) AS max_current_a,
+
+  -- 전력 평균/최대
+  avg(power_total_kw) AS avg_power_kw,
+  max(power_total_kw) AS max_power_kw,
+
+  -- 에너지 일간 사용량 (last − first, 카운터 리셋 시 0)
+  greatest(
+    last(energy_kwh, measured_at) - first(energy_kwh, measured_at),
+    0
+  ) AS delta_kwh,
+
+  -- 역률 평균
+  avg(power_factor) AS avg_power_factor,
+
+  count(*) AS reading_count
+FROM tbl_powermeter_reading
+GROUP BY
+  sensor_id,
+  time_bucket('1 day', measured_at);`,
       },
       {
         title: 'counter_agg + delta — Toolkit 으로 카운터 리셋까지 안전하게 처리',
@@ -245,52 +261,53 @@ ORDER BY 2;`,
         language: 'sql',
         code: `SELECT
   sensor_id,
-  time_bucket('1d', dt_insert, 'Asia/Seoul') AS dt_insert,
-  delta(counter_agg(dt_insert, counter)) AS ct
-FROM tbl_sensor_reading_counter
-WHERE sensor_id IN ($sensor_id)
-  AND $__timeFilter(dt_insert)
-GROUP BY 1, 2
-ORDER BY 1, 2;`,
+  time_bucket('1 day', measured_at) AS bucket_day,
+  delta(counter_agg(measured_at, counter)) AS delta_count
+FROM tbl_counter_reading
+GROUP BY sensor_id, time_bucket('1 day', measured_at)
+ORDER BY sensor_id, bucket_day;`,
       },
       {
         title: 'Continuous Aggregate — 일/월 2단 캐스케이드 자동 집계',
         description:
           '일 → 월 2단 캐스케이드 Cagg + 1시간 주기 자동 갱신 정책 (materialized_only=false 로 실시간 데이터 결합 조회).',
         language: 'sql',
-        code: `-- 일별 사용량 Cagg
-CREATE MATERIALIZED VIEW cagg_power_reading_1d
+        code: `-- 일별 에너지 사용량 Cagg
+CREATE MATERIALIZED VIEW cagg_powermeter_reading_1d
 WITH (timescaledb.continuous) AS
 SELECT
   sensor_id,
-  time_bucket('1d', dt_insert, 'Asia/Seoul') AS dt_insert,
-  GREATEST(last(kwh, dt_insert) - first(kwh, dt_insert), 0) AS usage
+  time_bucket('1 day', measured_at) AS bucket_day,
+  greatest(
+    last(energy_kwh, measured_at) - first(energy_kwh, measured_at),
+    0
+  ) AS delta_kwh
 FROM tbl_powermeter_reading
-GROUP BY 1, 2
+GROUP BY sensor_id, time_bucket('1 day', measured_at)
 WITH NO DATA;
 
-CALL refresh_continuous_aggregate('cagg_power_reading_1d', NULL, now()::date);
+CALL refresh_continuous_aggregate('cagg_powermeter_reading_1d', NULL, now()::date);
 
-SELECT add_continuous_aggregate_policy('cagg_power_reading_1d',
+SELECT add_continuous_aggregate_policy('cagg_powermeter_reading_1d',
   start_offset      => INTERVAL '3 days',
   end_offset        => INTERVAL '1 day',
   schedule_interval => INTERVAL '1 hour');
 
-ALTER MATERIALIZED VIEW cagg_power_reading_1d
+ALTER MATERIALIZED VIEW cagg_powermeter_reading_1d
   SET (timescaledb.materialized_only = false);
 
 -- 월별 Cagg (일 단위 Cagg 위에 캐스케이드)
-CREATE MATERIALIZED VIEW cagg_power_reading_1m
+CREATE MATERIALIZED VIEW cagg_powermeter_reading_1m
 WITH (timescaledb.continuous) AS
 SELECT
   sensor_id,
-  time_bucket('1 month', dt_insert, 'Asia/Seoul') AS dt_insert,
-  SUM(usage) AS usage
-FROM cagg_power_reading_1d
-GROUP BY 1, 2
+  time_bucket('1 month', bucket_day) AS bucket_month,
+  sum(delta_kwh) AS delta_kwh
+FROM cagg_powermeter_reading_1d
+GROUP BY sensor_id, time_bucket('1 month', bucket_day)
 WITH NO DATA;
 
-SELECT add_continuous_aggregate_policy('cagg_power_reading_1m',
+SELECT add_continuous_aggregate_policy('cagg_powermeter_reading_1m',
   start_offset      => INTERVAL '3 months',
   end_offset        => INTERVAL '1 day',
   schedule_interval => INTERVAL '1 hour');`,
@@ -361,6 +378,26 @@ WHERE compression_status = 'Compressed';`,
     },
     outcome:
       '메인 DB 서버의 CPU 부하 및 네트워크 트래픽 최적화로 인프라 비용 감소, 현장 Edge 장비 다운 장애 사전 예방',
+    metrics: [
+      {
+        label: '메인 DB CPU 사용률 (피크 기준)',
+        beforeValue: 99,
+        beforeDisplay: '99%',
+        afterValue: 25,
+        afterDisplay: '25%',
+        improvement: '약 75%p ↓',
+        unit: '%',
+      },
+      {
+        label: '클라우드 아웃바운드 트래픽 (피크 대역폭)',
+        beforeValue: 30,
+        beforeDisplay: '30Mbps',
+        afterValue: 10,
+        afterDisplay: '10Mbps',
+        improvement: '약 67% ↓ · 계약 기준 이내',
+        unit: 'Mbps',
+      },
+    ],
     roles: [
       '메인 DB CPU 과부하 (99%) 문제를 Prometheus 메트릭으로 진단하여 팀 내 복제 (Replication) 아키텍처 도입 근거 제시',
       '실시간 관제 대시보드 (Grafana) 의 데이터 소스를 Slave DB 로 이전 — Master DB CPU 사용량 안정화 (평균 25%) 및 네트워크 아웃바운드 트래픽 초과 비용 개선',
@@ -407,90 +444,6 @@ WHERE compression_status = 'Compressed';`,
       },
     ],
     codeSections: [
-      {
-        slug: 'alloy',
-        title: 'Grafana Alloy Config',
-        icon: 'pi pi-sliders-h',
-        headline:
-          'DB 서버 · Edge 서버에 sh 스크립트로 Grafana Alloy 단일 에이전트를 설치·배포하고, 노드 종류에 맞는 exporter 조합으로 호스트·Alloy 자체 메트릭을 push 방식으로 중앙 VictoriaMetrics 에 통합 전송하도록 구성했습니다.',
-        note: [
-          'ENV · VENDOR · REGION · ROLE 환경 변수를 external_labels 로 받아 PromQL 쿼리에서 환경 · 벤더 · 지역 · 서비스 역할 단위로 메트릭을 구분·필터링할 수 있도록 라벨링 체계를 통일했습니다.',
-          'INSTANCE 환경 변수로 모든 스크레이프의 instance 라벨을 통일(discovery.relabel)했습니다 — exporter 가 기본으로 박는 가변 식별자 대신 노드 단위로 일관된 식별이 보장됩니다.',
-          'Alloy 내장 unix exporter(node_exporter 호환)로 cpu · memory · filesystem · netdev 등 기본 collector 가 자동 활성화되고, enable_collectors 로 systemd · processes 등 추가 collector 도 손쉽게 확장 가능합니다.',
-          'remote_write queue_config(max_shards 200, capacity 2500, batch_send_deadline 5s)로 일시 네트워크 단절 시에도 메트릭 손실 없이 중앙 VictoriaMetrics 로 안전 전송되도록 구성했습니다.',
-        ],
-        snippets: [
-          {
-            title: 'Grafana Alloy — Edge 노드 호스트 메트릭 수집 설정',
-            description:
-              '단일 Alloy 에이전트가 unix exporter(호스트) + Alloy 자체 메트릭을 수집해 중앙 VictoriaMetrics 로 push. 환경 라벨링·노드 식별·재시도 정책까지 한 파일에서 정의.',
-            language: 'river',
-            code: `logging {
-  level  = "info"
-  format = "logfmt"
-}
-
-// 중앙 저장소(VictoriaMetrics) remote_write
-prometheus.remote_write "central" {
-  external_labels = {
-    env    = sys.env("ENV"),
-    vendor = sys.env("VENDOR"),
-    region = sys.env("REGION"),
-    role   = sys.env("ROLE"),
-  }
-
-  endpoint {
-    url = sys.env("REMOTE_WRITE_URL")
-
-    basic_auth {
-      username = sys.env("REMOTE_WRITE_USER")
-      password = sys.env("REMOTE_WRITE_PASSWORD")
-    }
-
-    queue_config {
-      max_samples_per_send = 1000
-      max_shards           = 200
-      capacity             = 2500
-      batch_send_deadline  = "5s"
-    }
-  }
-}
-
-// 호스트 시스템 메트릭 (내장 unix exporter)
-prometheus.exporter.unix "host" {
-  // enable_collectors = ["systemd", "processes"]  // 필요 시 추가 활성화
-}
-
-// exporter 가 박는 기본 instance 라벨을 노드 식별자로 치환
-discovery.relabel "host_targets" {
-  targets = prometheus.exporter.unix.host.targets
-  rule {
-    target_label = "instance"
-    replacement  = sys.env("INSTANCE")
-  }
-}
-
-// Alloy 컨벤션: 수집 메트릭은 job="integrations/unix" 로 들어감
-// (exporter 가 target 에 미리 박는 라벨이라 job_name 으로 덮을 수 없음)
-prometheus.scrape "host_metrics" {
-  targets         = discovery.relabel.host_targets.output
-  forward_to      = [prometheus.remote_write.central.receiver]
-  scrape_interval = "15s"
-}
-
-// Alloy 자체 메트릭
-prometheus.scrape "alloy_self" {
-  targets = [{
-    __address__ = "127.0.0.1:12345",
-    job         = "alloy",
-    instance    = sys.env("INSTANCE"),
-  }]
-  forward_to      = [prometheus.remote_write.central.receiver]
-  scrape_interval = "30s"
-}`,
-          },
-        ],
-      },
       {
         slug: 'grafana',
         title: 'Grafana Dashboard · Alert',
@@ -556,7 +509,28 @@ prometheus.scrape "alloy_self" {
         '생성형 AI 를 활용한 생산성 극대화로 FastAPI + Vue 기반 CBAM 서비스를 아키텍처 설계부터 배포까지 1인 풀스택으로 완성',
       ],
     },
-    outcome: '데이터 파이프라인 자동화로 운영 공수 80% 단축 및 CBAM 서비스 1인 풀스택 개발',
+    outcome:
+      '데이터 파이프라인 자동화로 운영 공수 80% 단축 및 신규 집계 추가 작업 약 12배 가속, CBAM 서비스 1인 풀스택 개발',
+    metrics: [
+      {
+        label: '데이터 파이프라인 운영 공수 (상대 비율)',
+        beforeValue: 100,
+        beforeDisplay: '100%',
+        afterValue: 20,
+        afterDisplay: '20%',
+        improvement: '약 80% 절감',
+        unit: '%',
+      },
+      {
+        label: '신규 집계/리포트 추가 작업 시간',
+        beforeValue: 3,
+        beforeDisplay: '약 3시간',
+        afterValue: 0.25,
+        afterDisplay: '약 15분',
+        improvement: '약 12× 빨라짐',
+        unit: 'h',
+      },
+    ],
     roles: [
       'Apache Airflow 기반의 자동화 배치 파이프라인 및 집계 DAGs 를 구축하여 운영 공수 80% 절감',
       'dbt 를 도입하여 파편화된 제조 데이터 표준화 및 데이터 이상치 (Outlier) 정제 파이프라인 구현',

@@ -156,7 +156,16 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
             <div class="mb-4 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
               Before / After
             </div>
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div
+              class="grid gap-6"
+              :class="
+                project.metrics.length >= 3
+                  ? 'sm:grid-cols-2 lg:grid-cols-3'
+                  : project.metrics.length === 2
+                    ? 'sm:grid-cols-2'
+                    : ''
+              "
+            >
               <MetricBar
                 v-for="(m, i) in project.metrics"
                 :key="i"
@@ -386,7 +395,7 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
         <template #content>
           <div
             v-if="project.snippetsHeadline || project.snippetsNote?.length"
-            class="mb-4 rounded-md border-l-4 border-primary-300 bg-primary-50/60 px-4 py-3 dark:border-primary-700 dark:bg-primary-950/30"
+            class="mb-4"
           >
             <p
               v-if="project.snippetsHeadline"
@@ -402,7 +411,7 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
               <li
                 v-for="(item, idx) in project.snippetsNote"
                 :key="idx"
-                class="flex gap-2.5 text-sm leading-relaxed text-surface-700 dark:text-surface-200"
+                class="flex gap-2.5 text-sm leading-relaxed text-surface-600 dark:text-surface-300"
               >
                 <span
                   class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
@@ -469,7 +478,7 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
         <template #content>
           <div
             v-if="section.headline || section.note?.length"
-            class="mb-4 rounded-md border-l-4 border-primary-300 bg-primary-50/60 px-4 py-3 dark:border-primary-700 dark:bg-primary-950/30"
+            class="mb-4"
           >
             <p
               v-if="section.headline"
@@ -485,7 +494,7 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
               <li
                 v-for="(item, idx) in section.note"
                 :key="idx"
-                class="flex gap-2.5 text-sm leading-relaxed text-surface-700 dark:text-surface-200"
+                class="flex gap-2.5 text-sm leading-relaxed text-surface-600 dark:text-surface-300"
               >
                 <span
                   class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
