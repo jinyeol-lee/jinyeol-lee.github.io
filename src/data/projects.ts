@@ -187,7 +187,7 @@ export const projects: Project[] = [
       },
     ],
     roles: [
-      'TimescaleDB 하이퍼테이블 아키텍처 및 하이퍼 함수 도입으로 대용량 시계열 데이터 조회 속도 평균 2~3배 향상',
+      'TimescaleDB 하이퍼테이블 아키텍처 및 하이퍼 함수 도입으로 시계열 데이터 조회 속도 평균 2~3배 향상',
       '연속집계 (Continuous Aggregates) 기능을 활용하여 수백만 건 규모의 통계/집계 쿼리 수행 시간 70% 이상 단축',
       '하이퍼테이블 청크 (Chunk) 단위 압축 (Compression) 정책 수립으로 데이터 저장 공간 80% 이상 절감',
       'Grafana 를 활용하여 제조 현장 맞춤형 IIoT 센서 데이터 실시간 대시보드 구축',
