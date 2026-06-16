@@ -5,6 +5,7 @@ import SkillBadge from '@/components/SkillBadge.vue'
 import CodeBlock from '@/components/CodeBlock.vue'
 import FloatingToc from '@/components/FloatingToc.vue'
 import MetricBar from '@/components/MetricBar.vue'
+import TechStackTabs from '@/components/TechStackTabs.vue'
 import Tabs from 'primevue/tabs'
 import TabList from 'primevue/tablist'
 import Tab from 'primevue/tab'
@@ -47,6 +48,9 @@ const tocItems = computed(() => {
     }
     if (p.media?.length) {
       list.push({ id: `arch-${p.slug}`, label: '아키텍처', level: 0 })
+    }
+    if (asRationaleList(p.techRationale).length) {
+      list.push({ id: `stack-${p.slug}`, label: '기술 스택', level: 0 })
     }
     if (p.codeSections?.length) {
       for (const sec of p.codeSections) {
@@ -112,11 +116,6 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
           <div class="flex flex-wrap gap-2">
             <SkillBadge v-for="tag in project.tags" :key="tag" :name="tag" />
           </div>
-
-          <p
-            class="mt-5 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
-            v-html="highlight(meta.summary)"
-          />
 
           <div
             v-if="project.outcome"
@@ -332,52 +331,24 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
                 </figure>
               </div>
 
-              <div
-                v-if="gIdx === 0 && asRationaleList(project.techRationale).length"
-                class="mt-5 flex flex-col gap-3"
-              >
-                <div
-                  v-for="(rationale, qIdx) in asRationaleList(project.techRationale)"
-                  :key="qIdx"
-                  class="overflow-hidden rounded-lg border border-primary-200 bg-primary-50/40 dark:border-primary-800 dark:bg-primary-950/20"
-                >
-                  <div
-                    class="flex items-center gap-2 border-b border-primary-200 bg-primary-50/60 px-4 py-2.5 dark:border-primary-800 dark:bg-primary-950/30"
-                  >
-                    <i
-                      class="pi pi-question-circle text-sm text-primary"
-                      aria-hidden="true"
-                    />
-                    <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">
-                      {{ rationale.question }}
-                    </span>
-                  </div>
-                  <div class="space-y-3 p-4">
-                    <p
-                      v-if="rationale.preface"
-                      class="text-sm leading-relaxed text-surface-700 dark:text-surface-300"
-                    >
-                      {{ rationale.preface }}
-                    </p>
-                    <ol class="space-y-2 pl-0">
-                      <li
-                        v-for="(reason, rIdx) in rationale.reasons"
-                        :key="rIdx"
-                        class="flex gap-2.5 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
-                      >
-                        <span
-                          class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
-                        >
-                          {{ rIdx + 1 }}
-                        </span>
-                        <span>{{ reason }}</span>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-              </div>
             </section>
           </div>
+        </template>
+      </Card>
+
+      <Card
+        v-if="asRationaleList(project.techRationale).length"
+        :id="`stack-${project.slug}`"
+        class="scroll-mt-24"
+      >
+        <template #title>
+          <span class="flex items-center gap-2 text-xl font-bold text-surface-900 dark:text-surface-0">
+            <i class="pi pi-wrench text-base text-primary" aria-hidden="true" />
+            기술 스택
+          </span>
+        </template>
+        <template #content>
+          <TechStackTabs :items="asRationaleList(project.techRationale)" />
         </template>
       </Card>
 

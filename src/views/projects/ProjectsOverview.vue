@@ -9,6 +9,18 @@ const summaries = yearList.map((y) => ({
   ...y,
   projects: getProjectsByYear(y.key),
 }))
+
+function gaugeColor(value: number): string {
+  if (value >= 80) return 'bg-emerald-500'
+  if (value >= 50) return 'bg-amber-500'
+  return 'bg-sky-400'
+}
+
+function gaugeTextColor(value: number): string {
+  if (value >= 80) return 'text-emerald-600 dark:text-emerald-400'
+  if (value >= 50) return 'text-amber-600 dark:text-amber-400'
+  return 'text-sky-600 dark:text-sky-400'
+}
 </script>
 
 <template>
@@ -42,6 +54,40 @@ const summaries = yearList.map((y) => ({
 
               <div class="mb-4 flex flex-wrap gap-2">
                 <SkillBadge v-for="tag in p.tags" :key="tag" :name="tag" size="sm" />
+              </div>
+
+              <div
+                v-if="typeof p.contribution === 'number'"
+                class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4"
+              >
+                <div class="flex shrink-0 items-center gap-3 sm:w-64">
+                  <span
+                    class="text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400"
+                  >
+                    기여도
+                  </span>
+                  <div
+                    class="relative h-2 flex-1 overflow-hidden rounded-full bg-surface-200 dark:bg-surface-800"
+                  >
+                    <div
+                      class="h-full rounded-full transition-[width] duration-500"
+                      :class="gaugeColor(p.contribution)"
+                      :style="{ width: p.contribution + '%' }"
+                    />
+                  </div>
+                  <span
+                    class="shrink-0 text-sm font-bold tabular-nums"
+                    :class="gaugeTextColor(p.contribution)"
+                  >
+                    {{ p.contribution }}%
+                  </span>
+                </div>
+                <span
+                  v-if="p.contributionScope"
+                  class="text-xs leading-relaxed text-surface-600 dark:text-surface-400"
+                >
+                  {{ p.contributionScope }}
+                </span>
               </div>
 
               <div

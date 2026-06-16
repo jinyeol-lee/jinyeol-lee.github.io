@@ -88,6 +88,8 @@ export interface TechRationale {
   question: string
   preface?: string
   reasons: string[]
+  /** SkillBadge 로 좌측에 표시할 기술명. 비우면 question 텍스트가 헤더로 표시됩니다. */
+  tech?: string
 }
 
 export interface ProjectBackground {
@@ -123,6 +125,10 @@ export interface Project {
   techRationale?: TechRationale | TechRationale[]
   background?: ProjectBackground
   metrics?: ProjectMetric[]
+  /** 0~100 사이 본인 기여도 (%) */
+  contribution?: number
+  /** 본인 기여 영역에 대한 짧은 설명 (게이지 옆에 표시) */
+  contributionScope?: string
 }
 
 export const projects: Project[] = [
@@ -132,6 +138,8 @@ export const projects: Project[] = [
     period: '2023.11 ~ 2024.04',
     year: 1,
     tags: ['TimescaleDB', 'Grafana', 'SQL'],
+    contribution: 35,
+    contributionScope: '데이터 시각화 · 통합 관제 대시보드 구축 담당',
     background: {
       context: [
         '사내 신규 프로젝트로 총 11개 공장에 IIoT 기반 ICT 인프라를 구축하는 과제 진행',
@@ -150,7 +158,7 @@ export const projects: Project[] = [
       ],
     },
     outcome:
-      'TimescaleDB 하이퍼테이블 · 연속집계 · 압축 정책 도입으로 시계열 조회 평균 2~3배 향상, 집계 쿼리 70% 이상 단축, 데이터 저장 공간 80% 이상 절감',
+      'TimescaleDB 하이퍼테이블·연속집계·압축 정책 도입으로 IIoT 시계열 데이터 조회 2~3배 향상·집계 쿼리 70% 이상 단축·저장 공간 80% 이상 절감, 제조 현장 실시간 관제 시스템 토대 구축.',
     metrics: [
       {
         label: '기본 시계열 조건 조회 (RAW 추출)',
@@ -195,15 +203,29 @@ export const projects: Project[] = [
         ],
       },
     ],
-    techRationale: {
-      question: 'TimescaleDB 를 선택한 이유',
-      preface:
-        '기존 MySQL 등 일반 RDBMS 로는 시계열 데이터의 쿼리 성능이 적합하지 않아 팀에서 시계열 DB 도입을 결정했고, InfluxDB 와 TimescaleDB 두 후보를 검토한 끝에 TimescaleDB 를 채택했습니다.',
-      reasons: [
-        '팀이 NoSQL 에 익숙하지 않은 상황이었고, TimescaleDB 는 PostgreSQL 확장이기 때문에 기존 SQL·RDBMS 지식을 그대로 활용해 빠르게 도입할 수 있었습니다.',
-        '마스터 데이터·메타정보 테이블과의 JOIN 이 자유로워, 기존 RDBMS 모델링·관계 쿼리 자산을 그대로 살릴 수 있었습니다.',
-      ],
-    },
+    techRationale: [
+      {
+        question: 'TimescaleDB 를 선택한 이유',
+        tech: 'TimescaleDB',
+        preface:
+          '기존 MySQL 등 일반 RDBMS 로는 시계열 데이터의 쿼리 성능이 적합하지 않아 팀에서 시계열 DB 도입을 결정했고, InfluxDB 와 TimescaleDB 두 후보를 검토한 끝에 TimescaleDB 를 채택했습니다.',
+        reasons: [
+          '팀이 NoSQL 에 익숙하지 않은 상황이었고, TimescaleDB 는 PostgreSQL 확장이기 때문에 기존 SQL·RDBMS 지식을 그대로 활용해 빠르게 도입할 수 있었습니다.',
+          '마스터 데이터·메타정보 테이블과의 JOIN 이 자유로워, 기존 RDBMS 모델링·관계 쿼리 자산을 그대로 살릴 수 있었습니다.',
+        ],
+      },
+      {
+        question: 'Grafana 를 선택한 이유',
+        tech: 'Grafana',
+        preface:
+          '센서 데이터 시각화·통합 관제 대시보드를 빠르게 구축해야 했고, 라이선스 비용·도메인 적합성·다중 업체 운영 요건을 종합적으로 고려해 Grafana 를 채택했습니다.',
+        reasons: [
+          '오픈소스로 라이선스 비용이 들지 않아 11개 업체에 확장 운영해도 비용 부담이 없습니다.',
+          'IIoT · 인프라 모니터링 도메인에서 사실상 표준에 가까운 도구라 TimescaleDB(PostgreSQL) 데이터 소스 연동과 시계열 쿼리 최적화 패턴이 풍부합니다.',
+          '업체별 폴더·대시보드 분리 + RBAC 기반 권한 관리로 다중 업체 환경에서도 안전하게 격리·공유 운영이 가능합니다.',
+        ],
+      },
+    ],
     codeSections: [
       {
         slug: 'sql',
@@ -349,6 +371,8 @@ WHERE compression_status = 'Compressed';`,
     title: '시스템 인프라 고도화 및 모니터링, 알림 구축',
     period: '2024.10 ~ 2025.05',
     year: 2,
+    contribution: 50,
+    contributionScope: 'DB 부하 진단 · Grafana 데이터 소스 격리 · Edge 모니터링/알람 체계 구축',
     tags: [
       'PostgreSQL',
       'TimescaleDB',
@@ -377,7 +401,7 @@ WHERE compression_status = 'Compressed';`,
       ],
     },
     outcome:
-      '메인 DB 서버의 CPU 부하 및 네트워크 트래픽 최적화로 인프라 비용 감소, 현장 Edge 장비 다운 장애 사전 예방',
+      'Prometheus 진단·Slave DB 격리로 DB CPU 99%→25% 안정화·아웃바운드 트래픽 10Mbps 이하 유지, Grafana Alloy 알림 체계 구축으로 Edge 장비 다운 장애 사전 예방.',
     metrics: [
       {
         label: '메인 DB CPU 사용률 (피크 기준)',
@@ -400,7 +424,7 @@ WHERE compression_status = 'Compressed';`,
     ],
     roles: [
       '메인 DB CPU 과부하 (99%) 문제를 Prometheus 메트릭으로 진단하여 팀 내 복제 (Replication) 아키텍처 도입 근거 제시',
-      '실시간 관제 대시보드 (Grafana) 의 데이터 소스를 Slave DB 로 이전 — Master DB CPU 사용량 안정화 (평균 25%) 및 네트워크 아웃바운드 트래픽 초과 비용 개선',
+      '실시간 관제 대시보드 (Grafana) 의 데이터 소스를 Slave DB 로 이전 — Master DB CPU 사용량 안정화 (평균 25%) 및 네트워크 아웃바운드 트래픽 10Mbps 이하 유지로 초과 비용 개선',
       '현장 PC 에 Grafana Alloy 에이전트를 도입하여 호스트 메트릭 수집 및 임계치 알림 체계를 구축, 메모리 고갈 전 사전 조치로 장비 다운 원천 예방',
     ],
     media: [
@@ -416,6 +440,7 @@ WHERE compression_status = 'Compressed';`,
     techRationale: [
       {
         question: 'PgBouncer 를 도입한 이유',
+        tech: 'PgBouncer',
         preface:
           '업체 수 증가에 대비해 신규 클라우드 DB 서버를 추가 도입했지만 예상보다 사양이 부족해 CPU 가 100% 까지 치솟는 문제가 발생했습니다. 이를 해소하기 위해 신규 서버를 기존 DB 서버로 이전·통합하는 작업을 진행했고, 이 통합 과정에서 read/write 가 여러 포트로 분산되어 있던 구조를 단일 엔드포인트로 정리하고 다수 Edge 서버의 동시 접속을 안전하게 처리하기 위해 PgBouncer 를 함께 도입했습니다.',
         reasons: [
@@ -425,6 +450,7 @@ WHERE compression_status = 'Compressed';`,
       },
       {
         question: 'Streaming Replication 을 선택한 이유',
+        tech: 'Streaming Replication',
         preface:
           '클라우드 DB 통합 이후에도 Grafana 대시보드가 가져가는 읽기 트래픽이 누적되면서 클라우드 사업자의 아웃바운드 네트워크 계약 기준을 초과해 추가 비용이 발생하기 시작했습니다. 계약 기준 이내로 유지하면서 동시에 Master DB 의 CPU 부담까지 함께 분리하기 위해, 사내 내부 서버에 Replica 를 두고 읽기 트래픽을 사내망에서 처리하도록 전환하기로 팀 내에서 결정했고, 후보로 검토한 Logical Replication · pgpool · Patroni HA 중 Streaming Replication 을 채택했습니다.',
         reasons: [
@@ -433,13 +459,25 @@ WHERE compression_status = 'Compressed';`,
         ],
       },
       {
-        question: '팀이 구축한 복제 설정 — 핵심 구성 3계층',
+        question: 'Grafana Alloy 를 도입한 이유',
+        tech: 'Grafana Alloy',
         preface:
-          'Streaming Replication 시스템의 구성은 다음 3계층으로 요약됩니다. 저는 이 구조의 동작 원리와 운영 포인트를 파악한 위에서 Grafana 데이터 소스 전환 시점, 복제 지연 모니터링 기준 등을 함께 판단·결정했습니다.',
+          '업체 내부 네트워크에 위치한 Edge 서버의 메트릭을 중앙 모니터링 서버로 전송하려면 외부에서 접근할 수 없는 환경 특성상 Edge 측에서 push 방식으로 전송해야 했고, Prometheus agent 모드와 Grafana Alloy 두 후보를 검토한 끝에 Grafana Alloy 를 채택했습니다.',
         reasons: [
-          'Primary 송신 안전망 — max_wal_senders · max_replication_slots · wal_keep_size 64GB 로 Standby 가 일시 지연되더라도 WAL 이 회수되지 않도록 구성',
-          'Standby 읽기 워크로드 차등 튜닝 — wal_buffers · max_wal_size 를 Primary 대비 2~4배 확장 + random_page_cost 상향(Sequential Scan 선호)',
-          'SSL/GSS 우선 보안 연결 — sslmode · gssencmode prefer + application_name 으로 다중 Standby 식별·모니터링',
+          '메트릭(Prometheus) · 로그(Promtail) · 트레이스(Tempo) 까지 통합한 올인원 에이전트라 향후 로그·트레이스 수집까지 확장할 때 단일 바이너리·단일 설정으로 운영 범위를 늘릴 수 있습니다.',
+          'River 설정 언어로 환경 변수 기반 라벨링·라우팅·queue_config 같은 운영 옵션을 한 파일에서 선언적으로 관리할 수 있어 다수 Edge 노드에 sh 스크립트로 일괄 배포·운영하기에 적합했습니다.',
+          'Grafana 생태계와 자연스럽게 결합되어 Edge 메트릭 수집 → VictoriaMetrics 저장 → Grafana 시각화·알람까지 동일 벤더 스택 안에서 일관되게 흐를 수 있습니다.',
+        ],
+      },
+      {
+        question: 'VictoriaMetrics 를 선택한 이유',
+        tech: 'VictoriaMetrics',
+        preface:
+          '중앙 메트릭 저장소로 Prometheus 와 VictoriaMetrics 를 비교 검토했고, 저장 효율·메모리 점유·수평 확장성 측면에서 VictoriaMetrics 를 채택했습니다.',
+        reasons: [
+          'Prometheus 대비 디스크 공간을 최대 5~7배 적게 사용해 메트릭 장기 보관 비용을 구조적으로 절감할 수 있습니다.',
+          '태생부터 "낮은 메모리 점유" 를 목표로 설계되어 다수 Edge 노드의 메트릭이 누적되는 환경에서도 단일 노드 자원으로 안정적 운영이 가능합니다.',
+          '향후 메트릭 양이 늘면 cluster 모드로 scale-out 이 가능해 인프라 확장 경로가 단일 노드 한계에 막히지 않습니다.',
         ],
       },
     ],
@@ -491,6 +529,8 @@ WHERE compression_status = 'Compressed';`,
     title: '데이터 파이프라인 구축 및 CBAM 서비스 개발',
     period: '2025.11 ~ 2026.06',
     year: 3,
+    contribution: 100,
+    contributionScope: '1인 풀스택 전담 (백엔드 · 프론트엔드 · 인프라 · 파이프라인)',
     tags: ['Airflow', 'dbt', 'FastAPI', 'Vue.js', 'Docker', 'Nginx', 'GitLab CI/CD'],
     background: {
       context: [
@@ -510,7 +550,7 @@ WHERE compression_status = 'Compressed';`,
       ],
     },
     outcome:
-      '데이터 파이프라인 자동화로 운영 공수 80% 단축 및 신규 집계 추가 작업 약 12배 가속, CBAM 서비스 1인 풀스택 개발',
+      'Airflow + dbt 표준화 파이프라인 도입으로 운영 공수 약 80% 절감·신규 집계 추가 작업 약 12배 가속, 신규 CBAM 서비스(FastAPI, Vue) 아키텍처 설계부터 배포까지 1인 풀스택 전담.',
     metrics: [
       {
         label: '데이터 파이프라인 운영 공수 (상대 비율)',
@@ -550,6 +590,7 @@ WHERE compression_status = 'Compressed';`,
     techRationale: [
       {
         question: 'Airflow 를 도입한 이유',
+        tech: 'Airflow',
         preface:
           '1년차에 도입한 TimescaleDB Continuous Aggregate(Cagg) 로 대부분의 집계 처리를 운영해왔지만, 업체 수가 늘어나면서 한계가 드러났습니다. Cagg 는 단일 SELECT 표현 안에서만 가능해 복잡한 JOIN·전처리·조건 분기를 담기 어려웠고, refresh_interval 기반이라 "정확한 시점" 스케줄링이 불가능했으며, 업체별 DB 가 늘면서 각 DB 의 Cagg 정의·관리 비용이 누적되었습니다. 이를 해소하기 위해 표준화·집계 파이프라인을 Airflow 로 전환·중앙화하기로 결정했습니다.',
         reasons: [
@@ -560,6 +601,7 @@ WHERE compression_status = 'Compressed';`,
       },
       {
         question: 'dbt 를 도입한 이유',
+        tech: 'dbt',
         preface:
           '업체·장비별로 누적되어 온 센서 테이블이 파편화되어 컬럼 명세·단위·이상값 처리 기준이 제각각이라 관리 비용이 누적되었고, 이상값(Outlier) 정제 필요성도 함께 커졌습니다. 전처리·표준화 로직을 코드로 통일·중앙 관리할 수단이 필요했고, Airflow 와 자연스럽게 결합되는 dbt 를 채택해 데이터 표준화·중앙 관리 체계를 구축했습니다.',
         reasons: [
@@ -569,13 +611,25 @@ WHERE compression_status = 'Compressed';`,
         ],
       },
       {
-        question: 'CBAM 스택을 FastAPI + Vue 로 선택한 이유',
+        question: 'FastAPI 를 선택한 이유',
+        tech: 'FastAPI',
         preface:
-          '신규 CBAM 서비스를 1인 풀스택으로 설계부터 배포까지 책임져야 했고, 사용 가능한 백엔드 스택 중 Spring Boot 와 FastAPI 를 비교 검토한 끝에 FastAPI + Vue 조합을 채택했습니다.',
+          '신규 CBAM 서비스의 백엔드는 다룰 수 있는 후보인 Spring Boot 와 FastAPI 사이에서 검토했고, 1인 풀스택으로 빠른 출시·시계열 조회 성능·API 명세 동기화 비용을 종합적으로 고려해 FastAPI 를 채택했습니다.',
         reasons: [
-          'pydantic 모델 기반으로 OpenAPI 스펙이 자동 생성되어 프론트(Vue) 와의 API 계약 동기화 비용이 0 에 가깝게 줄어듭니다 — Spring Boot 대비 별도 어노테이션·설정 없이 자연스럽게 확보됩니다.',
-          'async/await 기반 비동기 처리로 대용량 시계열 데이터 조회·집계 응답에 유리할 것으로 판단 — 동시 요청에 대한 처리량 측면에서 Spring Boot 동기 처리 대비 우위가 기대됩니다.',
-          '생성형 AI(Claude) 활용으로 1인 풀스택 개발 생산성이 충분히 확보된다고 판단 — 백엔드·프론트엔드 양쪽을 단일 개발자가 일정 내에 완주할 수 있는 현실성이 결정 요인이었습니다.',
+          'pydantic 모델 기반으로 OpenAPI(Swagger) 스펙이 자동 생성·동기화되어 프론트엔드(Vue) 와의 API 계약을 별도 어노테이션·설정 없이 일치시킬 수 있습니다.',
+          '타입 힌트 기반 자동 검증과 가벼운 의존성 주입으로 보일러플레이트가 적어, 1인 풀스택 환경에서 백엔드 개발 속도를 빠르게 확보할 수 있었습니다.',
+          'async/await 비동기 처리로 시계열 데이터 조회 같은 I/O 바운드 워크로드에서 Spring Boot 동기 처리 대비 더 높은 동시성을 확보할 수 있을 것으로 판단했습니다.',
+        ],
+      },
+      {
+        question: 'Vue 를 선택한 이유',
+        tech: 'Vue',
+        preface:
+          '프론트엔드는 React 와 Vue 두 후보를 검토했고, 생성형 AI 를 활용한 1인 개발 환경·생태계 표준화·UI 라이브러리 통합 비용을 종합적으로 고려해 Vue 를 채택했습니다.',
+        reasons: [
+          'React 대비 직관적인 SFC(Single File Component) 문법으로, 생성형 AI 가 만든 코드를 빠르게 검토·수정할 수 있어 초기 개발 생산성을 극대화했습니다.',
+          '컴포넌트를 직접 설계·관리할 정도의 프론트엔드 경험이 부족했고 프로젝트 규모도 그 정도가 아니었기에, Vue Router · Pinia 같은 공식 표준 생태계가 정해져 있다는 점이 적합했습니다.',
+          'PrimeVue 컴포넌트 라이브러리를 그대로 도입해 UI 구성 시간을 단축하고, CBAM 서비스의 비즈니스 로직에 더 많은 시간을 투입할 수 있었습니다.',
         ],
       },
     ],

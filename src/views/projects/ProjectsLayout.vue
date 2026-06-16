@@ -13,7 +13,7 @@ const tabs = [
     <header class="mb-8">
       <h1 class="mb-2 text-3xl font-bold text-surface-900 dark:text-surface-0">Projects</h1>
       <p class="text-surface-600 dark:text-surface-300">
-        (주) 이노비 입사(2023.06) 후 연차별로 주도한 프로젝트들을 정리했습니다.
+        연차별로 주도한 프로젝트들을 정리했습니다.
       </p>
     </header>
 
