@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import SkillBadge from '@/components/SkillBadge.vue'
+import ArchitectureDiagram from '@/components/ArchitectureDiagram.vue'
 
 const stats = [
   { value: '50+', label: '제조업체' },
@@ -122,6 +123,16 @@ const techStack = [
           size="lg"
         />
       </div>
+    </div>
+
+    <!-- 전체 아키텍처 (ThingsBoard 스타일) -->
+    <div class="mx-auto mt-16 max-w-6xl">
+      <div
+        class="mb-5 text-center text-xs font-semibold uppercase tracking-[0.2em] text-surface-500 dark:text-surface-400"
+      >
+        Architecture
+      </div>
+      <ArchitectureDiagram />
     </div>
   </section>
 </template>

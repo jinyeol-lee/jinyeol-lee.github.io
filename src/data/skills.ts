@@ -35,6 +35,7 @@ const SKILL_ICON_MAP: Record<string, string> = {
   dbt: 'logos:dbt-icon',
   Grafana: 'logos:grafana',
   Prometheus: 'logos:prometheus',
+  'OPC UA': 'mdi:transit-connection-variant',
   Python: 'logos:python',
   'Python (데이터분석)': 'logos:python',
   'Python (Pandas, Scikit-learn, etc.)': 'logos:python',
