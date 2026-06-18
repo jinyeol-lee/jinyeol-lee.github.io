@@ -75,6 +75,10 @@ const certificates = [
     <Card class="mb-10">
       <template #content>
         <div class="space-y-4 leading-relaxed text-surface-700 dark:text-surface-300">
+          <p class="text-lg font-semibold leading-snug text-surface-900 dark:text-surface-0">
+            "제조 현장 시계열 데이터의 처리·관제부터 표준화 파이프라인까지,<br class="hidden sm:block" />
+            데이터로 시스템 가용성과 비즈니스 가치를 끌어올리는 데이터 엔지니어"
+          </p>
           <p>
             스마트 팩토리·IIoT 도메인에서 약 50개 제조업체, 2,000여 개 센서가 연결된 시계열 데이터
             플랫폼의 데이터 처리·관제 영역을 담당해 온 데이터 엔지니어 겸 백엔드 개발자입니다.
