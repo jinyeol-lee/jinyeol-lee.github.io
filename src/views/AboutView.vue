@@ -23,21 +23,27 @@ const experiences = [
     company: '(주) 이노비',
     role: '선임 연구원 — Data Engineer & Backend Developer',
     period: '2023.06 ~ 현재',
-    highlights: [
+    timeline: [
       {
+        tag: '1년차',
+        period: '2023.06 ~ 2024.05',
         title: '데이터 아키텍처 및 쿼리 최적화',
         detail:
-          'TimescaleDB 하이퍼테이블·연속집계 (Cagg)·청크 압축 정책 도입으로 IIoT 시계열 조회 속도 2~3배 향상, 집계 쿼리 70% 이상 단축 및 데이터 저장 공간 80% 이상 절감',
+          'TimescaleDB 기반으로 IIoT 시계열 데이터의 조회·집계·저장 구조를 최적화하고, 제조 현장 맞춤형 통합 관제 대시보드를 구축했습니다.',
       },
       {
+        tag: '2년차',
+        period: '2024.06 ~ 2025.05',
         title: '인프라 고도화 및 장애 예방',
         detail:
-          'Prometheus 메트릭 분석 기반의 DB CPU 부하 최적화 (99% → 25%) 및 Slave DB 소스 격리, Grafana Alloy 기반의 알림 구축을 통한 현장 장비 다운 장애 사전 예방',
+          'Prometheus 메트릭으로 DB 부하를 진단해 복제(Replica) 격리를 도입하고, Grafana Alloy 알림 체계를 구축해 인프라 안정성과 장애 대응력을 높였습니다.',
       },
       {
+        tag: '3년차',
+        period: '2025.06 ~ 현재',
         title: '파이프라인 구축 및 비즈니스 확장',
         detail:
-          'Apache Airflow 및 dbt 도입을 통한 파편화된 제조 데이터 표준화로 운영 공수 80% 감축, 생성형 AI 를 활용한 신규 CBAM 서비스 (FastAPI, Vue) 1인 전담 개발',
+          'Airflow·dbt 표준화 파이프라인을 구축하고, 신규 CBAM 서비스(FastAPI·Vue)를 아키텍처 설계부터 배포까지 1인 풀스택으로 개발했습니다.',
       },
     ],
   },
@@ -108,19 +114,28 @@ const certificates = [
           <span class="text-sm">{{ exp.company }} · {{ exp.period }}</span>
         </template>
         <template #content>
-          <ul class="space-y-3">
+          <ol class="relative ml-2 border-l border-surface-200 dark:border-surface-700">
             <li
-              v-for="h in exp.highlights"
+              v-for="h in exp.timeline"
               :key="h.title"
-              class="flex gap-3 text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+              class="mb-8 ml-6 last:mb-0"
             >
-              <i class="pi pi-check mt-1 text-xs text-primary" aria-hidden="true" />
-              <span>
-                <strong class="text-surface-800 dark:text-surface-100">{{ h.title }}:</strong>
+              <span
+                class="absolute -left-[6px] mt-1.5 h-3 w-3 rounded-full bg-primary"
+                aria-hidden="true"
+              />
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                <span class="text-xs font-semibold text-primary">{{ h.tag }}</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{ h.period }}</span>
+              </div>
+              <h3 class="mt-1 font-semibold text-surface-900 dark:text-surface-0">
+                {{ h.title }}
+              </h3>
+              <p class="mt-1 text-sm leading-relaxed text-surface-700 dark:text-surface-300">
                 {{ h.detail }}
-              </span>
+              </p>
             </li>
-          </ul>
+          </ol>
         </template>
       </Card>
     </div>
