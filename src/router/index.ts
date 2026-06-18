@@ -9,49 +9,22 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/about',
-    name: 'about',
-    component: () => import('@/views/AboutView.vue'),
-    meta: { title: 'About' },
+    redirect: { path: '/', hash: '#career' },
   },
   {
     path: '/projects',
-    component: () => import('@/views/projects/ProjectsLayout.vue'),
-    meta: { title: 'Projects' },
-    children: [
-      {
-        path: '',
-        name: 'projects',
-        component: () => import('@/views/projects/ProjectsOverview.vue'),
-        meta: { title: 'Projects' },
-      },
-      {
-        path: 'year-1',
-        name: 'projects-year-1',
-        component: () => import('@/views/projects/YearProjectsView.vue'),
-        props: { year: 1 },
-        meta: { title: '1년차' },
-      },
-      {
-        path: 'year-2',
-        name: 'projects-year-2',
-        component: () => import('@/views/projects/YearProjectsView.vue'),
-        props: { year: 2 },
-        meta: { title: '2년차' },
-      },
-      {
-        path: 'year-3',
-        name: 'projects-year-3',
-        component: () => import('@/views/projects/YearProjectsView.vue'),
-        props: { year: 3 },
-        meta: { title: '3년차' },
-      },
-    ],
+    redirect: { path: '/', hash: '#projects' },
+  },
+  {
+    path: '/projects/:slug',
+    name: 'project-detail',
+    component: () => import('@/views/projects/ProjectDetailView.vue'),
+    props: true,
+    meta: { title: 'Project' },
   },
   {
     path: '/contact',
-    name: 'contact',
-    component: () => import('@/views/ContactView.vue'),
-    meta: { title: 'Contact' },
+    redirect: { path: '/', hash: '#contact' },
   },
   {
     path: '/:pathMatch(.*)*',
@@ -64,7 +37,10 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior(_to, _from, savedPosition) {
+  scrollBehavior(to, _from, savedPosition) {
+    if (to.hash) {
+      return { el: to.hash, top: 80, behavior: 'smooth' }
+    }
     return savedPosition ?? { top: 0 }
   },
 })

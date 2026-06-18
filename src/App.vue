@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import AppHeader from '@/components/AppHeader.vue'
+import FloatingControls from '@/components/FloatingControls.vue'
 import AppFooter from '@/components/AppFooter.vue'
 
 const isDark = ref(false)
@@ -20,7 +20,7 @@ watch(isDark, (val) => {
 
 <template>
   <div class="flex min-h-screen flex-col">
-    <AppHeader v-model:is-dark="isDark" />
+    <FloatingControls v-model:is-dark="isDark" />
     <main class="flex-1">
       <RouterView v-slot="{ Component, route }">
         <Transition name="fade" mode="out-in">

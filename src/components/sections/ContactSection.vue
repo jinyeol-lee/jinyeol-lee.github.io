@@ -31,9 +31,9 @@ const contacts: ContactItem[] = [
 </script>
 
 <template>
-  <section class="mx-auto max-w-2xl px-4 py-16">
-    <h1 class="mb-2 text-3xl font-bold text-surface-900 dark:text-surface-0">Contact</h1>
-    <p class="mb-8 text-surface-600 dark:text-surface-300">
+  <section id="contact" class="mx-auto max-w-2xl scroll-mt-24">
+    <h2 class="mb-2 text-2xl font-bold text-surface-900 dark:text-surface-0">Contact</h2>
+    <p class="mb-6 text-surface-600 dark:text-surface-300">
       궁금한 점이나 협업 제안이 있다면 편하게 연락 주세요.
     </p>
 

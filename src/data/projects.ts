@@ -20,7 +20,6 @@ export interface YearMeta {
   key: YearKey
   label: string
   range: string
-  routeName: string
   summary: string
   showcase?: Showcase
 }
@@ -30,7 +29,6 @@ export const years: Record<YearKey, YearMeta> = {
     key: 1,
     label: '1년차',
     range: '2023.06 ~ 2024.05',
-    routeName: 'projects-year-1',
     summary:
       'TimescaleDB 하이퍼테이블·연속집계·압축 정책 도입으로 IIoT 시계열 데이터 조회 2~3배 향상·집계 쿼리 70% 이상 단축·저장 공간 80% 이상 절감, 제조 현장 실시간 관제 시스템 토대 구축.',
     showcase: {
@@ -51,7 +49,6 @@ export const years: Record<YearKey, YearMeta> = {
     key: 2,
     label: '2년차',
     range: '2024.06 ~ 2025.05',
-    routeName: 'projects-year-2',
     summary:
       'Prometheus 진단·Slave DB 격리로 DB CPU 99%→25% 안정화, Grafana Alloy 알림 체계 구축으로 Edge 장비 다운 장애 사전 예방.',
   },
@@ -59,7 +56,6 @@ export const years: Record<YearKey, YearMeta> = {
     key: 3,
     label: '3년차',
     range: '2025.06 ~ 현재',
-    routeName: 'projects-year-3',
     summary:
       'Airflow + dbt 표준화 파이프라인 도입(운영 공수 80% 절감), 신규 CBAM 서비스(FastAPI, Vue) 아키텍처 설계부터 배포까지 1인 풀스택 전담.',
   },
