@@ -13,7 +13,7 @@ const skillGroups: SkillGroup[] = [
   { category: 'Database', items: ['PostgreSQL', 'TimescaleDB', 'SQL'] },
   {
     category: 'Data Engineering',
-    items: ['Python', 'Airflow', 'dbt', 'Grafana'],
+    items: ['Airflow', 'dbt', 'Grafana'],
   },
   { category: 'DevOps', items: ['Docker', 'GitLab'] },
 ]
@@ -62,14 +62,14 @@ const education = [
 
 const certificates = [
   {
-    title: '빅데이터분석기사',
-    issuer: '한국데이터산업진흥원',
-    date: '2025.07',
-  },
-  {
     title: '정보처리기사',
     issuer: '한국산업인력공단',
     date: '2023.11',
+  },
+  {
+    title: '빅데이터분석기사',
+    issuer: '한국데이터산업진흥원',
+    date: '2025.07',
   },
 ]
 </script>
