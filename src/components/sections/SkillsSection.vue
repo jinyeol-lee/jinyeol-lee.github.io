@@ -10,9 +10,12 @@ interface SkillGroup {
 const skillGroups: SkillGroup[] = [
   { category: 'Language', items: ['Java', 'Python'] },
   { category: 'Backend', items: ['Spring Boot', 'FastAPI'] },
+  { category: 'Frontend', items: ['Vue'] },
   { category: 'Database', items: ['PostgreSQL', 'TimescaleDB', 'SQL'] },
-  { category: 'Data Engineering', items: ['Airflow', 'dbt', 'Grafana'] },
-  { category: 'DevOps', items: ['Docker', 'GitLab'] },
+  { category: 'Data Engineering', items: ['Airflow', 'dbt'] },
+  { category: 'Monitoring', items: ['Grafana', 'Prometheus', 'Grafana Alloy'] },
+  { category: 'DevOps', items: ['Docker', 'Nginx', 'Linux', 'GitLab'] },
+  { category: 'AI · Productivity', items: ['Claude Code'] },
 ]
 </script>
 

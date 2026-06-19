@@ -20,12 +20,13 @@ const SKILL_ICON_MAP: Record<string, string> = {
   PgBouncer: 'mdi:database-arrow-right',
   SQL: 'mdi:database',
   'Streaming Replication': 'mdi:database-sync',
-  VictoriaMetrics: 'mdi:chart-line-variant',
-  'Grafana Alloy': 'logos:grafana',
+  VictoriaMetrics: 'simple-icons:victoriametrics',
+  'Grafana Alloy': 'material-icon-theme:grafana-alloy',
 
   // DevOps / Infra
   Docker: 'logos:docker-icon',
   Nginx: 'logos:nginx',
+  Linux: 'logos:linux-tux',
   'GitLab CI/CD': 'devicon:gitlab',
   GitLab: 'devicon:gitlab',
 
@@ -45,6 +46,9 @@ const SKILL_ICON_MAP: Record<string, string> = {
   // Security
   JWT: 'logos:jwt-icon',
   Casbin: 'simple-icons:casbin',
+
+  // AI · Productivity
+  'Claude Code': 'simple-icons:anthropic',
 }
 
 const FALLBACK_ICON = 'mdi:code-tags'
