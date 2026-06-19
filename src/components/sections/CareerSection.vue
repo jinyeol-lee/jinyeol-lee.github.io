@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type Category = '경력' | '학력' | '자격증' | '교육'
+type Category = '프로젝트' | '학력' | '자격증' | '교육'
 
 interface TimelineEntry {
   /** 정렬용 시작 시점 (YYYYMM) — 내림차순 */
@@ -22,7 +22,7 @@ const entries: TimelineEntry[] = [
   {
     sort: 202511,
     period: '2025.11 ~ 2026.06',
-    category: '경력',
+    category: '프로젝트',
     title: '파이프라인 구축 및 비즈니스 확장',
     org: '(주) 이노비 · 선임 연구원',
     detail:
@@ -31,7 +31,7 @@ const entries: TimelineEntry[] = [
   {
     sort: 202410,
     period: '2024.10 ~ 2025.05',
-    category: '경력',
+    category: '프로젝트',
     title: '인프라 고도화 및 장애 예방',
     org: '(주) 이노비 · 주임 연구원',
     detail:
@@ -47,7 +47,7 @@ const entries: TimelineEntry[] = [
   {
     sort: 202311,
     period: '2023.11 ~ 2024.04',
-    category: '경력',
+    category: '프로젝트',
     title: '데이터 아키텍처 및 쿼리 최적화',
     org: '(주) 이노비 · 연구원',
     detail:
@@ -70,7 +70,7 @@ entries.sort((a, b) => b.sort - a.sort)
 
 function categoryClasses(cat: Category): { dot: string; badge: string } {
   switch (cat) {
-    case '경력':
+    case '프로젝트':
       return {
         dot: 'bg-primary',
         badge: 'bg-primary-50 text-primary dark:bg-primary-950/40',
@@ -82,9 +82,9 @@ function categoryClasses(cat: Category): { dot: string; badge: string } {
       }
     case '자격증':
       return {
-        dot: 'bg-emerald-500',
+        dot: 'bg-purple-500',
         badge:
-          'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400',
+          'bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400',
       }
     case '교육':
       return {

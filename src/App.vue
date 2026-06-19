@@ -20,7 +20,7 @@ watch(isDark, (val) => {
 
 <template>
   <div class="flex min-h-screen flex-col">
-    <FloatingControls v-model:is-dark="isDark" />
+    <FloatingControls />
     <main class="flex-1">
       <RouterView v-slot="{ Component, route }">
         <Transition name="fade" mode="out-in">
