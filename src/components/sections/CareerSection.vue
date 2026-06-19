@@ -26,7 +26,7 @@ const entries: TimelineEntry[] = [
     title: '파이프라인 구축 및 비즈니스 확장',
     org: '(주) 이노비 · 선임 연구원',
     detail:
-      'Airflow·dbt 표준화 파이프라인을 구축하고, 신규 CBAM 서비스(FastAPI·Vue)를 아키텍처 설계부터 배포까지 1인 풀스택으로 개발했습니다.',
+      'Airflow·dbt 표준화 파이프라인을 구축하고, 멀티테넌트 FastAPI·Vue 기반 사내 자체 관리 대시보드를 아키텍처 설계부터 배포까지 1인 풀스택으로 개발하며 CBAM·FEMS 후속 서비스의 확장 기반을 마련했습니다.',
   },
   {
     sort: 202410,

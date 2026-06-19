@@ -19,7 +19,6 @@ const KEYWORDS = [
   'dbt',
   'FastAPI',
   'Vue',
-  'CBAM',
   'OPC UA',
   '1인 풀스택',
   '풀스택',

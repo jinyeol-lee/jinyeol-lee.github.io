@@ -57,7 +57,7 @@ export const years: Record<YearKey, YearMeta> = {
     label: '3년차',
     range: '2025.06 ~ 현재',
     summary:
-      'Airflow + dbt 표준화 파이프라인 도입(운영 공수 80% 절감), 신규 CBAM 서비스(FastAPI, Vue) 아키텍처 설계부터 배포까지 1인 풀스택 전담.',
+      'Airflow + dbt 표준화 파이프라인 도입(운영 공수 80% 절감), 멀티테넌트 FastAPI + Vue 기반 사내 자체 관리 대시보드를 아키텍처 설계부터 배포까지 1인 풀스택 전담 — CBAM·FEMS 후속 서비스의 확장 기반 마련.',
   },
 }
 
@@ -522,7 +522,7 @@ WHERE compression_status = 'Compressed';`,
   },
   {
     slug: 'pipeline-cbam',
-    title: '데이터 파이프라인 구축 및 CBAM 서비스 개발',
+    title: '데이터 파이프라인 구축 및 사내 자체 관리 대시보드 · 확장형 API 서버 개발',
     period: '2025.11 ~ 2026.06',
     year: 3,
     contribution: 100,
@@ -532,21 +532,21 @@ WHERE compression_status = 'Compressed';`,
       context: [
         'Grafana 기본 시각화만으로는 업체별·사용자별 맞춤 요구사항을 충족하기 어려워 자체 대시보드(서비스) 개발 필요성 증가',
         '데이터 수집·모니터링 운영 업체 수가 누적되며 분산된 파이프라인의 중앙 관리·자동화 체계 필요성 증가',
-        '사내 신규 비즈니스인 CBAM(탄소국경조정제도) 대응 서비스의 빠른 출시 요구 발생',
+        '사내 신규 비즈니스(CBAM·FEMS 등) 대응을 위한, 확장 가능한 자체 서비스·API 기반 마련 필요성 증가',
       ],
       problem: [
         '다중 업체·다중 센서 데이터가 파편화된 채 누적되며 표준화·이상치 정제·집계 처리의 운영 공수가 빠르게 증가',
         '기존 TimescaleDB Continuous Aggregate 만으로는 다양한 비즈니스 단위 집계와 파이프라인 단위 테스트 가능성을 확보하기 어려움',
-        '신규 CBAM 서비스를 백엔드·프론트엔드·인프라까지 1인이 빠르게 완성해야 하는 개발 부담',
+        '사내 자체 관리 대시보드와 후속 서비스(CBAM·FEMS)의 공통 기반이 될 API 서버를 백엔드·프론트엔드·인프라까지 1인이 빠르게 완성해야 하는 개발 부담',
       ],
       goal: [
         '표준화·이상치 정제·집계 자동화로 파이프라인 운영 공수 절감 및 데이터 품질 확보',
         'Apache Airflow + dbt 도입으로 스케줄링 유연성과 파이프라인 단위 테스트 가능성 확보',
-        '생성형 AI 를 활용한 생산성 극대화로 FastAPI + Vue 기반 CBAM 서비스를 아키텍처 설계부터 배포까지 1인 풀스택으로 완성',
+        '생성형 AI 를 활용한 생산성 극대화로 FastAPI + Vue 기반 사내 자체 관리 대시보드를 아키텍처 설계부터 배포까지 1인 풀스택으로 완성하고, CBAM·FEMS 후속 개발의 확장 기반 마련',
       ],
     },
     outcome:
-      'Airflow + dbt 표준화 파이프라인 도입으로 운영 공수 약 80% 절감·신규 집계 추가 작업 약 12배 가속, 신규 CBAM 서비스(FastAPI, Vue) 아키텍처 설계부터 배포까지 1인 풀스택 전담.',
+      'Airflow + dbt 표준화 파이프라인 도입으로 운영 공수 약 80% 절감·신규 집계 추가 작업 약 12배 가속, 멀티테넌트 FastAPI + Vue 기반 사내 자체 관리 대시보드를 아키텍처 설계부터 배포까지 1인 풀스택 전담 — CBAM·FEMS 후속 서비스 확장 기반 마련.',
     metrics: [
       {
         label: '데이터 파이프라인 운영 공수 (상대 비율)',
@@ -570,16 +570,16 @@ WHERE compression_status = 'Compressed';`,
     roles: [
       'Apache Airflow 기반의 자동화 배치 파이프라인 및 집계 DAGs 를 구축하여 운영 공수 80% 절감',
       'dbt 를 도입하여 파편화된 제조 데이터 표준화 및 데이터 이상치 (Outlier) 정제 파이프라인 구현',
-      '생성형 AI 를 활용한 생산성 극대화로 신규 CBAM 서비스 (FastAPI, Vue) 아키텍처 설계부터 배포까지 1인 풀스택 전담 개발',
+      '생성형 AI 를 활용한 생산성 극대화로 멀티테넌트 FastAPI + Vue 기반 사내 자체 관리 대시보드 (CBAM·FEMS 후속 확장 기반) 를 아키텍처 설계부터 배포까지 1인 풀스택 전담 개발',
     ],
     media: [
       {
         label: '아키텍처',
         src: `${import.meta.env.BASE_URL}architectures/iot_dataplatform_architecture.svg`,
-        alt: '데이터 표준화 파이프라인 · CBAM API 서비스 아키텍처',
+        alt: '데이터 표준화 파이프라인 · 사내 자체 관리 대시보드 API 서버 아키텍처',
         description: [
-          '1·2년차에 구축한 IoT 수집·복제 인프라 (Edge → 클라우드 TimescaleDB Primary → 사내 Replica) 위에, 3년차에는 사내 내부 서버에 Airflow + dbt 표준화 파이프라인과 FastAPI + Vue 기반 CBAM 서비스를 신설했습니다.',
-          'Airflow 가 dbt 모델 (staging → intermediate → mart) 을 스케줄링해 Replica 원본을 표준화·집계된 마트 테이블로 가공하고, FastAPI 가 마트를 읽어 사용자용 CBAM 앱 (Vue) 과 관리자 페이지에 REST API 로 제공합니다. 기존 Grafana 데이터 대시보드와 모니터링·알람 체계 (VictoriaMetrics) 는 1·2년차 구성을 그대로 이어 사용자·관리자에게 노출됩니다.',
+          '1·2년차에 구축한 IoT 수집·복제 인프라 (Edge → 클라우드 TimescaleDB Primary → 사내 Replica) 위에, 3년차에는 사내 내부 서버에 Airflow + dbt 표준화 파이프라인과 FastAPI + Vue 기반 사내 자체 관리 대시보드를 신설하고, CBAM·FEMS 후속 서비스가 올라갈 공통 API 기반을 마련했습니다.',
+          'Airflow 가 dbt 모델 (staging → intermediate → mart) 을 스케줄링해 Replica 원본을 표준화·집계된 마트 테이블로 가공하고, FastAPI 가 마트를 읽어 사내 자체 관리 대시보드 (Vue) 와 관리자 페이지에 REST API 로 제공합니다. 기존 Grafana 데이터 대시보드와 모니터링·알람 체계 (VictoriaMetrics) 는 1·2년차 구성을 그대로 이어 사용자·관리자에게 노출됩니다.',
         ],
       },
     ],
@@ -610,7 +610,7 @@ WHERE compression_status = 'Compressed';`,
         question: 'FastAPI 를 선택한 이유',
         tech: 'FastAPI',
         preface:
-          '신규 CBAM 서비스의 백엔드는 다룰 수 있는 후보인 Spring Boot 와 FastAPI 사이에서 검토했고, 1인 풀스택으로 빠른 출시·시계열 조회 성능·API 명세 동기화 비용을 종합적으로 고려해 FastAPI 를 채택했습니다.',
+          '사내 자체 관리 대시보드와 CBAM·FEMS 후속 서비스가 공통으로 올라갈 API 백엔드는 다룰 수 있는 후보인 Spring Boot 와 FastAPI 사이에서 검토했고, 1인 풀스택으로 빠른 출시·시계열 조회 성능·API 명세 동기화 비용을 종합적으로 고려해 FastAPI 를 채택했습니다.',
         reasons: [
           'pydantic 모델 기반으로 OpenAPI(Swagger) 스펙이 자동 생성·동기화되어 프론트엔드(Vue) 와의 API 계약을 별도 어노테이션·설정 없이 일치시킬 수 있습니다.',
           '타입 힌트 기반 자동 검증과 가벼운 의존성 주입으로 보일러플레이트가 적어, 1인 풀스택 환경에서 백엔드 개발 속도를 빠르게 확보할 수 있었습니다.',
@@ -625,7 +625,7 @@ WHERE compression_status = 'Compressed';`,
         reasons: [
           'React 대비 직관적인 SFC(Single File Component) 문법으로, 생성형 AI 가 만든 코드를 빠르게 검토·수정할 수 있어 초기 개발 생산성을 극대화했습니다.',
           '컴포넌트를 직접 설계·관리할 정도의 프론트엔드 경험이 부족했고 프로젝트 규모도 그 정도가 아니었기에, Vue Router · Pinia 같은 공식 표준 생태계가 정해져 있다는 점이 적합했습니다.',
-          'PrimeVue 컴포넌트 라이브러리를 그대로 도입해 UI 구성 시간을 단축하고, CBAM 서비스의 비즈니스 로직에 더 많은 시간을 투입할 수 있었습니다.',
+          'PrimeVue 컴포넌트 라이브러리를 그대로 도입해 UI 구성 시간을 단축하고, 사내 자체 관리 대시보드의 비즈니스 로직에 더 많은 시간을 투입할 수 있었습니다.',
         ],
       },
     ],
@@ -906,10 +906,10 @@ for i, client in enumerate(CLIENTS):
       },
       {
         slug: 'fastapi',
-        title: 'FastAPI · Multi-Tenant CBAM API',
+        title: 'FastAPI · Multi-Tenant API 서버 (CBAM·FEMS 확장 기반)',
         icon: 'pi pi-bolt',
         headline:
-          '하나의 API 인스턴스가 X-Tenant-ID 헤더로 업체별 DB 엔진을 동적 라우팅하고, 1·2년차에 구축한 Read Replica 를 자동 fallback 하는 멀티테넌트 패턴 위에 CBAM 도메인 라우터를 얹었습니다.',
+          '하나의 API 인스턴스가 X-Tenant-ID 헤더로 업체별 DB 엔진을 동적 라우팅하고, 1·2년차에 구축한 Read Replica 를 자동 fallback 하는 멀티테넌트 패턴 위에, 사내 자체 관리 대시보드와 CBAM·FEMS 후속 서비스가 공통으로 올라갈 도메인 라우터 기반을 마련했습니다.',
         note: [
           'TenantMiddleware → request.state → FastAPI Depends 체인으로 모든 라우터에 tenant_id·세션이 일관 주입 — 도메인 핸들러는 멀티테넌트 분기를 신경 쓰지 않습니다.',
           'EngineRegistry 가 테넌트별 read·write AsyncEngine 을 lazy 생성·캐시하고, Replica 연결 실패 시 자동으로 write 엔진으로 fallback + 1회만 Slack 알림 발송합니다.',
@@ -1013,8 +1013,8 @@ async def create_item(
         media: [
           {
             label: 'FastAPI 아키텍처',
-            src: `${import.meta.env.BASE_URL}architectures/fastapi-cbam-architecture.svg`,
-            alt: 'Multi-Tenant FastAPI Gateway · CBAM API 아키텍처',
+            src: `${import.meta.env.BASE_URL}architectures/fastapi-multitenant-architecture.svg`,
+            alt: 'Multi-Tenant FastAPI Gateway · 확장형 API 서버 (CBAM·FEMS 기반) 아키텍처',
             caption: 'Multi-Tenant FastAPI Gateway — Middleware Chain → Depends 체인 → 테넌트별 read/write 엔진 자동 라우팅 (Replica fallback 포함)',
           },
         ],

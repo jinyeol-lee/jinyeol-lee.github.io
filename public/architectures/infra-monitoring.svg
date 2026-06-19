@@ -187,41 +187,41 @@
   <text x="1305" y="558" text-anchor="middle" font-size="10.5" fill="#cfc7da">대시보드 · 알람 수신</text>
 
   <!-- ============ Data-flow arrows ============ -->
-  <path d="M109,272 C109,330 160,365 165,398" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
-  <path d="M247,272 C247,330 195,365 188,398" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M109,272 V366 Q109,378 121,378 H153 Q165,378 165,390 V400" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M247,272 V366 Q247,378 235,378 H200 Q188,378 188,390 V400" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
 
   <!-- Edge -> PgBouncer wrapper (write) -->
-  <path d="M304,452 C328,449 344,414.8 357,401" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <path d="M304,452 H334 Q346,452 346,440 V413 Q346,401 358,401" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
   <text x="332" y="426" text-anchor="middle" font-size="10.5" font-weight="600" fill="#56606c">적재 write</text>
 
   <!-- Primary -> Replica (Streaming Replication) -->
-  <path d="M610,400 C652,392 672,267 686,252" fill="none" stroke="#2D9C6F" stroke-width="2.6" marker-end="url(#arrowGreen)"/>
+  <path d="M630,400 H636 Q648,400 648,388 V264 Q648,252 660,252 H688" fill="none" stroke="#2D9C6F" stroke-width="2.6" marker-end="url(#arrowGreen)"/>
   <text x="636" y="338" text-anchor="middle" font-size="11" font-weight="700" fill="#2D9C6F">Streaming</text>
   <text x="636" y="352" text-anchor="middle" font-size="11" font-weight="700" fill="#2D9C6F">Replication</text>
 
   <!-- Replica -> Grafana #1 (read) -->
-  <path d="M938,244 C949,244 956,244 964,244" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
+  <path d="M938,244 L964,244" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
   <text x="951" y="236" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c5612e">Read</text>
 
   <!-- VictoriaMetrics -> Grafana #2 (metrics) -->
-  <path d="M938,508 C949,508 956,508 964,508" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
+  <path d="M938,508 L964,508" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
   <text x="951" y="500" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c5612e">Metrics</text>
 
   <!-- Grafana #1 -> User -->
-  <path d="M1114,244 C1150,244 1162,244 1182,244" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <path d="M1114,244 L1182,244" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
   <text x="1148" y="236" text-anchor="middle" font-size="10.5" font-weight="600" fill="#56606c">대시보드 제공</text>
 
   <!-- Grafana #2 -> Admin -->
-  <path d="M1114,508 C1150,508 1162,508 1182,508" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <path d="M1114,508 L1182,508" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
   <text x="1148" y="500" text-anchor="middle" font-size="10.5" font-weight="600" fill="#56606c">대시보드 · 알람</text>
 
   <!-- ============ Monitoring arrows (dashed) ============ -->
   <!-- Edge Alloy -> VictoriaMetrics -->
-  <path d="M276,520 C430,575 560,560 686,518" fill="none" stroke="#7E57C2" stroke-width="2.2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
-  <text x="468" y="565" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6A4399">Prometheus metrics</text>
+  <path d="M304,519 L686,519" fill="none" stroke="#7E57C2" stroke-width="2.2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
+  <text x="468" y="537" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6A4399">Prometheus metrics</text>
 
   <!-- Primary Alloy -> VictoriaMetrics -->
-  <path d="M596,464 C638,472 656,480 686,490" fill="none" stroke="#7E57C2" stroke-width="2.2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
+  <path d="M596,464 H664 Q676,464 676,476 V478 Q676,490 688,490" fill="none" stroke="#7E57C2" stroke-width="2.2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
   <text x="648" y="460" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6A4399">metrics</text>
 
   <!-- ============ Legend ============ -->

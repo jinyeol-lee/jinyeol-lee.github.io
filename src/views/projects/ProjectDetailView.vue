@@ -24,7 +24,7 @@ const tocItems = computed(() => {
   const p = project.value
   if (!p) return []
   const list: { id: string; label: string; level: number }[] = []
-  list.push({ id: `project-${p.slug}`, label: p.title, level: 0 })
+  list.push({ id: `project-${p.slug}`, label: '성과 요약', level: 0 })
   if (p.background) {
     list.push({ id: `background-${p.slug}`, label: '프로젝트 배경', level: 0 })
   }
@@ -117,3 +117,10 @@ const tocItems = computed(() => {
     <TocPill v-if="tocItems.length > 0" :items="tocItems" />
   </section>
 </template>
+
+<style scoped>
+/* 섹션 카드 제목과 본문 사이에 약간의 여백 */
+:deep(.p-card-title) {
+  margin-bottom: 0.5rem;
+}
+</style>

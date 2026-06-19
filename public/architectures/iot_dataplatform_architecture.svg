@@ -11,7 +11,7 @@
   <rect x="0" y="0" width="1720" height="880" fill="#FBFCFE"/>
 
   <text x="860" y="44" text-anchor="middle" font-size="26" font-weight="700" fill="#1c2733">데이터 표준화 파이프라인 · API 서비스 아키텍처</text>
-  <text x="860" y="69" text-anchor="middle" font-size="13" fill="#7a8694">Airflow + dbt ELT (staging → intermediate → mart) · FastAPI + Vue (CBAM) · Grafana · VictoriaMetrics</text>
+  <text x="860" y="69" text-anchor="middle" font-size="13" fill="#7a8694">Airflow + dbt ELT · FastAPI + Vue · Grafana · VictoriaMetrics</text>
 
   <!-- Zone bands -->
   <rect x="24"   y="90" width="236" height="716" rx="16" fill="#EAF4FB" stroke="#B6D9F0" stroke-width="1.5"/>
@@ -35,8 +35,7 @@
   <text x="200" y="234" text-anchor="middle" font-size="13.5" font-weight="700" fill="#fff">PLC</text>
   <text x="200" y="252" text-anchor="middle" font-size="10" fill="#dcebf7">Controller</text>
 
-  <rect x="84" y="306" width="116" height="22" rx="11" fill="#ffffff" stroke="#9CC9E8" stroke-width="1.1"/>
-  <text x="142" y="321" text-anchor="middle" font-size="10" font-weight="600" fill="#2E6B96">RS-232·485 / LAN</text>
+  <!-- RS-232 pill is drawn later (after IoT/PLC arrows) so it sits on top of the straight lines -->
 
   <g filter="url(#shadow)"><rect x="40" y="384" width="204" height="138" rx="12" fill="#117A8B"/></g>
   <g transform="translate(131,396)" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="13" width="18" height="6" rx="1.5"/><circle cx="6.5" cy="7" r="1" fill="#fff" stroke="none"/><circle cx="6.5" cy="16" r="1" fill="#fff" stroke="none"/></g>
@@ -107,9 +106,9 @@
   <g filter="url(#shadow)"><rect x="970" y="348" width="180" height="120" rx="13" fill="#0E9F8E" stroke="#FF5A5F" stroke-width="2.6"/></g>
   <rect x="1104" y="339" width="44" height="18" rx="9" fill="#FF5A5F"/>
   <text x="1126" y="352" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">NEW</text>
-  <g transform="translate(1030,362)" stroke="#fff" stroke-width="1.7" fill="#fff" stroke-linejoin="round"><path d="M13,2 L4,14 h6 l-1,8 9,-12 h-6 z"/></g>
-  <text x="1060" y="392" text-anchor="middle" font-size="15.5" font-weight="700" fill="#fff">FastAPI</text>
-  <text x="1060" y="411" text-anchor="middle" font-size="10" fill="#d6f3ee">API 서버 · REST</text>
+  <g transform="translate(1049,358)" stroke="#fff" stroke-width="1.7" fill="#fff" stroke-linejoin="round"><path d="M13,2 L4,14 h6 l-1,8 9,-12 h-6 z"/></g>
+  <text x="1060" y="400" text-anchor="middle" font-size="15.5" font-weight="700" fill="#fff">FastAPI</text>
+  <text x="1060" y="417" text-anchor="middle" font-size="10" fill="#d6f3ee">API 서버 · REST</text>
   <rect x="986" y="422" width="148" height="24" rx="7" fill="#ffffff" fill-opacity="0.2"/>
   <text x="1060" y="438" text-anchor="middle" font-size="9.5" font-weight="600" fill="#fff">Vue 앱 / 관리자 API 제공</text>
 
@@ -125,7 +124,7 @@
   <g transform="translate(1519,210)" fill="#fff"><circle cx="12" cy="8" r="4.6"/><path d="M3.5,21 a8.5,8 0 0 1 17,0 z"/></g>
   <text x="1531" y="262" text-anchor="middle" font-size="15.5" font-weight="700" fill="#fff">사용자</text>
   <rect x="1418" y="274" width="226" height="26" rx="7" fill="#41B883" stroke="#FF5A5F" stroke-width="1.8"/>
-  <text x="1531" y="291" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">CBAM 앱 (Vue)</text>
+  <text x="1531" y="291" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">관리 대시보드 (Vue)</text>
   <rect x="1418" y="306" width="226" height="26" rx="7" fill="#E8743B"/>
   <text x="1531" y="323" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">데이터 대시보드 (Grafana)</text>
 
@@ -139,13 +138,16 @@
 
   <!-- ===== Arrows ===== -->
   <!-- IoT/PLC -> Edge -->
-  <path d="M93,264 C93,320 135,350 138,382" fill="none" stroke="#5b6470" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M200,264 C200,320 150,350 146,382" fill="none" stroke="#5b6470" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M93,264 V346 Q93,358 105,358 H118 Q130,358 130,370 V384" fill="none" stroke="#5b6470" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M200,264 V346 Q200,358 188,358 H166 Q154,358 154,370 V384" fill="none" stroke="#5b6470" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- RS-232 pill on top of the straight IoT/PLC lines -->
+  <rect x="84" y="306" width="116" height="22" rx="11" fill="#ffffff" stroke="#9CC9E8" stroke-width="1.1"/>
+  <text x="142" y="321" text-anchor="middle" font-size="10" font-weight="600" fill="#2E6B96">RS-232·485 / LAN</text>
   <!-- Edge -> PgBouncer (write) -->
-  <path d="M244,448 C266,446 278,418 290,406" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M244,448 H270 Q282,448 282,436 V418 Q282,406 294,406" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
   <text x="268" y="424" text-anchor="middle" font-size="10" font-weight="600" fill="#56606c">적재 write</text>
   <!-- Cloud Primary -> Internal Replica (Streaming Replication) -->
-  <path d="M462,300 C500,272 524,246 554,240" fill="none" stroke="#2D9C6F" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <path d="M498,300 V252 Q498,240 510,240 H556" fill="none" stroke="#2D9C6F" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
   <text x="480" y="255" text-anchor="middle" font-size="10" font-weight="700" fill="#2D9C6F">Streaming</text>
   <text x="480" y="268" text-anchor="middle" font-size="10" font-weight="700" fill="#2D9C6F">Replication</text>
 
@@ -156,33 +158,33 @@
   <text x="527" y="438" text-anchor="middle" font-size="9.5" font-weight="600" fill="#44619E">mart write</text>
 
   <!-- TimescaleDB -> Grafana#1 (data) -->
-  <path d="M812,224 C880,228 920,232 980,232" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M812,228 L980,228" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
   <text x="896" y="222" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">조회 query</text>
   <!-- TimescaleDB -> FastAPI (mart read) -->
-  <path d="M812,276 C892,300 900,372 968,392" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
+  <path d="M812,276 H928 Q940,276 940,288 V380 Q940,392 952,392 H970" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
   <text x="876" y="318" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0B8576">마트 조회</text>
   <!-- VictoriaMetrics -> Grafana#2 -->
-  <path d="M812,564 C880,564 920,564 980,564" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M812,564 L980,564" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
   <text x="896" y="555" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">metrics</text>
 
   <!-- Grafana#1 -> User -->
-  <path d="M1134,232 C1280,236 1300,262 1402,268" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M1134,232 H1378 Q1390,232 1390,244 V256 Q1390,268 1402,268 H1404" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
   <text x="1250" y="240" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">데이터 대시보드</text>
   <!-- FastAPI -> User -->
-  <path d="M1150,396 C1280,388 1300,318 1402,300" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
-  <text x="1264" y="360" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0B8576">API · CBAM</text>
+  <path d="M1150,396 H1376 Q1388,396 1388,384 V312 Q1388,300 1400,300 H1404" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
+  <text x="1264" y="360" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0B8576">API · 대시보드</text>
   <!-- FastAPI -> Admin -->
-  <path d="M1150,420 C1284,432 1300,486 1402,500" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
+  <path d="M1150,420 H1372 Q1384,420 1384,432 V488 Q1384,500 1396,500 H1404" fill="none" stroke="#0E9F8E" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
   <text x="1262" y="470" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0B8576">API · 관리자페이지</text>
   <!-- Grafana#2 -> Admin -->
-  <path d="M1134,564 C1280,560 1300,538 1402,530" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M1134,564 H1378 Q1390,564 1390,552 V542 Q1390,530 1402,530 H1404" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
   <text x="1252" y="586" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">모니터링 · 알람</text>
 
   <!-- Monitoring (dashed) -->
-  <path d="M226,500 C420,660 470,612 554,584" fill="none" stroke="#7E57C2" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
-  <text x="400" y="640" text-anchor="middle" font-size="10" font-weight="600" fill="#6A4399">Prometheus metrics (Edge)</text>
-  <path d="M472,466 C516,520 510,556 554,556" fill="none" stroke="#7E57C2" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
-  <text x="500" y="512" text-anchor="middle" font-size="9.5" font-weight="600" fill="#6A4399">metrics (Cloud DB)</text>
+  <path d="M244,518 V572 Q244,584 256,584 H556" fill="none" stroke="#7E57C2" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
+  <text x="406" y="577" text-anchor="middle" font-size="10" font-weight="600" fill="#6A4399">Prometheus metrics (Edge)</text>
+  <path d="M498,470 V544 Q498,556 510,556 H556" fill="none" stroke="#7E57C2" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#arrowMon)"/>
+  <text x="524" y="512" text-anchor="middle" font-size="9.5" font-weight="600" fill="#6A4399">metrics (Cloud DB)</text>
 
   <!-- ===== Legend ===== -->
   <line x1="300" y1="838" x2="338" y2="838" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>

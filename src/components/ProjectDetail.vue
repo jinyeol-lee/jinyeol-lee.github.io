@@ -61,13 +61,20 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
     :id="`project-${project.slug}`"
     class="flex flex-col gap-3 scroll-mt-24"
   >
+    <header class="mb-1 flex flex-col gap-1">
+      <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0 sm:text-3xl">
+        {{ project.title }}
+      </h1>
+      <span class="text-sm text-surface-500 dark:text-surface-400">
+        {{ project.period }}
+      </span>
+    </header>
+
     <Card>
       <template #title>
-        <span class="text-xl font-bold text-surface-900 dark:text-surface-0">{{ project.title }}</span>
-      </template>
-      <template #subtitle>
-        <span class="text-sm text-surface-500 dark:text-surface-400">
-          {{ project.period }}
+        <span class="flex items-center gap-2 text-xl font-bold text-surface-900 dark:text-surface-0">
+          <i class="pi pi-chart-line text-base text-primary" aria-hidden="true" />
+          성과 요약
         </span>
       </template>
       <template #content>
@@ -566,3 +573,10 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
     </Card>
   </article>
 </template>
+
+<style scoped>
+/* 각 섹션 카드 제목과 본문 사이에 약간의 여백 */
+:deep(.p-card-title) {
+  margin-bottom: 0.5rem;
+}
+</style>

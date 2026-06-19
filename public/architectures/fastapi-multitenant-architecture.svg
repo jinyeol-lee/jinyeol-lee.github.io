@@ -1,0 +1,120 @@
+<svg viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg" font-family="'Pretendard','Noto Sans KR','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#5b6470"/></marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#2D9C6F"/></marker>
+    <marker id="arrowTeal" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#0E9F8E"/></marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#FF5A5F"/></marker>
+    <marker id="arrowMon" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="6.5" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#7E57C2"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1c2733" flood-opacity="0.18"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="1440" height="600" fill="#FBFCFE"/>
+
+  <text x="720" y="42" text-anchor="middle" font-size="24" font-weight="700" fill="#1c2733">Multi-Tenant FastAPI Gateway · 확장형 API 서버 (CBAM·FEMS 기반)</text>
+  <text x="720" y="66" text-anchor="middle" font-size="13" fill="#7a8694">하나의 FastAPI 인스턴스가 X-Tenant-ID 로 테넌트별 DB 를 동적 라우팅 — read=Replica · write=Primary (실패 시 fallback)</text>
+
+  <!-- Zone bands -->
+  <rect x="24"   y="92" width="236" height="446" rx="16" fill="#EAF4FB" stroke="#B6D9F0" stroke-width="1.5"/>
+  <rect x="280"  y="92" width="600" height="446" rx="16" fill="#EAF7EF" stroke="#BBE3CB" stroke-width="1.5"/>
+  <rect x="900"  y="92" width="216" height="446" rx="16" fill="#F1ECFA" stroke="#CDBCEC" stroke-width="1.5"/>
+  <rect x="1136" y="92" width="280" height="446" rx="16" fill="#FBF1E9" stroke="#F0D6BE" stroke-width="1.5"/>
+
+  <text x="142"  y="122" text-anchor="middle" font-size="14" font-weight="700" fill="#2E6B96">클라이언트 · Client</text>
+  <text x="580"  y="122" text-anchor="middle" font-size="14" font-weight="700" fill="#2C8C5A">FastAPI Gateway · Multi-Tenant</text>
+  <text x="1008" y="122" text-anchor="middle" font-size="14" font-weight="700" fill="#6A4D9E">Master DB · Control Plane</text>
+  <text x="1276" y="122" text-anchor="middle" font-size="14" font-weight="700" fill="#B5722A">Tenant DBs · Data Plane</text>
+
+  <!-- ===== Z1 Client ===== -->
+  <g filter="url(#shadow)"><rect x="50" y="168" width="184" height="82" rx="12" fill="#41B883"/></g>
+  <g transform="translate(131,180)" stroke="#fff" stroke-width="1.8" fill="none" stroke-linejoin="round"><path d="M2,4 L11,20 L20,4"/><path d="M7,4 L11,12 L15,4"/></g>
+  <text x="142" y="226" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">관리 대시보드</text>
+  <text x="142" y="243" text-anchor="middle" font-size="10" fill="#dcf0e3">Vue · 사용자</text>
+
+  <g filter="url(#shadow)"><rect x="50" y="268" width="184" height="82" rx="12" fill="#357C5B"/></g>
+  <g transform="translate(133,280)" stroke="#fff" stroke-width="1.6" fill="none"><circle cx="11" cy="9" r="4"/><path d="M3.5,21 a8.5,7.5 0 0 1 15,0 z"/></g>
+  <text x="142" y="326" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">관리자 페이지</text>
+  <text x="142" y="343" text-anchor="middle" font-size="10" fill="#d6e8de">Vue · 관리자</text>
+
+  <rect x="58" y="386" width="168" height="28" rx="14" fill="#ffffff" stroke="#9CC9E8" stroke-width="1.1"/>
+  <text x="142" y="404" text-anchor="middle" font-size="10" font-weight="600" fill="#2E6B96">X-Tenant-ID + Bearer JWT</text>
+
+  <!-- ===== Z2 Gateway : 3 stages ===== -->
+  <g filter="url(#shadow)"><rect x="300" y="162" width="560" height="94" rx="12" fill="#5A6B82"/></g>
+  <text x="580" y="190" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">① Middleware Chain</text>
+  <text x="580" y="214" text-anchor="middle" font-size="11" fill="#dde2eb">CORS 허용 · 요청 속도 제한 · 테넌트 식별</text>
+  <text x="580" y="234" text-anchor="middle" font-size="10.5" fill="#c3ccd9">요청 헤더(X-Tenant-ID)로 어떤 업체 요청인지 판별</text>
+
+  <g filter="url(#shadow)"><rect x="300" y="276" width="560" height="94" rx="12" fill="#0E9F8E"/></g>
+  <text x="580" y="304" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">② Router · RBAC (Casbin)</text>
+  <text x="580" y="328" text-anchor="middle" font-size="11" fill="#d4f1ed">역할(reader·writer·admin)별 API 접근 권한 검사</text>
+  <text x="580" y="348" text-anchor="middle" font-size="10.5" fill="#a8e2da">입력값 자동 검증 · API 명세(OpenAPI) 자동 생성</text>
+
+  <g filter="url(#shadow)"><rect x="300" y="390" width="560" height="106" rx="12" fill="#44619E"/></g>
+  <text x="580" y="418" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">③ Dynamic Engine Routing · per tenant</text>
+  <text x="580" y="442" text-anchor="middle" font-size="11" fill="#dde4f1">쓰기 요청은 해당 업체의 Primary DB 로 연결</text>
+  <text x="580" y="461" text-anchor="middle" font-size="11" fill="#dde4f1">읽기 요청은 Replica DB 로 연결 (장애 시 Primary 로 대체)</text>
+  <text x="580" y="481" text-anchor="middle" font-size="10" fill="#bcc7e0">업체별 DB 연결을 동적으로 생성·캐싱</text>
+
+  <rect x="320" y="512" width="520" height="30" rx="8" fill="#ffffff" stroke="#BBE3CB" stroke-width="1.2"/>
+  <text x="580" y="531" text-anchor="middle" font-size="10" font-weight="600" fill="#2C8C5A">Background (lifespan) · 센서 오프라인 · 피크 전력 감시 · 사용량 집계</text>
+
+  <!-- stage flow arrows -->
+  <path d="M580,256 L580,272" stroke="#5b6470" stroke-width="2.2" fill="none" marker-end="url(#arrow)"/>
+  <path d="M580,370 L580,386" stroke="#5b6470" stroke-width="2.2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- ===== Z3 Master DB ===== -->
+  <g filter="url(#shadow)"><rect x="916" y="186" width="184" height="178" rx="12" fill="#6A5A7E"/></g>
+  <g transform="translate(998,198)" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"><ellipse cx="9" cy="5" rx="7" ry="2.6"/><path d="M2,5 v10 a7,2.6 0 0 0 14,0 v-10"/><path d="M2,10 a7,2.6 0 0 0 14,0"/></g>
+  <text x="1008" y="222" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Master DB</text>
+  <text x="1008" y="239" text-anchor="middle" font-size="10" fill="#e2dceb">PostgreSQL</text>
+  <rect x="930" y="250" width="156" height="24" rx="7" fill="#ffffff" fill-opacity="0.16"/>
+  <text x="1008" y="266" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">업체별 접속 정보 (TenantCache)</text>
+  <rect x="930" y="280" width="156" height="24" rx="7" fill="#ffffff" fill-opacity="0.16"/>
+  <text x="1008" y="296" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">접근 권한(RBAC) 정책</text>
+  <rect x="930" y="310" width="156" height="24" rx="7" fill="#ffffff" fill-opacity="0.16"/>
+  <text x="1008" y="326" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">사용자 계정 · API 키</text>
+  <text x="1008" y="352" text-anchor="middle" font-size="9.5" fill="#cdbfe0">Audit · 사용량 집계 저장</text>
+
+  <!-- ===== Z4 Tenant DBs ===== -->
+  <g filter="url(#shadow)"><rect x="1158" y="178" width="244" height="74" rx="11" fill="#2D9C6F"/></g>
+  <g transform="translate(1172,192)" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round"><ellipse cx="9" cy="5" rx="7" ry="2.6"/><path d="M2,5 v10 a7,2.6 0 0 0 14,0 v-10"/><path d="M2,10 a7,2.6 0 0 0 14,0"/></g>
+  <text x="1206" y="206" font-size="13" font-weight="700" fill="#fff">Tenant A · Primary</text>
+  <text x="1206" y="224" font-size="10" fill="#d8f1e6">write · TimescaleDB</text>
+
+  <g filter="url(#shadow)"><rect x="1158" y="264" width="244" height="74" rx="11" fill="#0E9F8E"/></g>
+  <g transform="translate(1172,278)" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round"><ellipse cx="9" cy="5" rx="7" ry="2.6"/><path d="M2,5 v10 a7,2.6 0 0 0 14,0 v-10"/><path d="M2,10 a7,2.6 0 0 0 14,0"/></g>
+  <text x="1206" y="292" font-size="13" font-weight="700" fill="#fff">Tenant A · Replica</text>
+  <text x="1206" y="310" font-size="10" fill="#d6f3ee">read · Streaming Replica</text>
+
+  <g filter="url(#shadow)"><rect x="1158" y="350" width="244" height="56" rx="11" fill="#2D9C6F" fill-opacity="0.42"/></g>
+  <text x="1280" y="374" text-anchor="middle" font-size="12" font-weight="700" fill="#235c45">Tenant B · Primary / Replica</text>
+  <text x="1280" y="392" text-anchor="middle" font-size="9.5" fill="#2f6b51">동일 패턴으로 분리 운영</text>
+
+  <rect x="1158" y="420" width="244" height="40" rx="11" fill="#ffffff" stroke="#F0D6BE" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="1280" y="445" text-anchor="middle" font-size="11" font-weight="700" fill="#B5722A">Tenant N · · · 동적 확장</text>
+
+  <!-- ===== Arrows ===== -->
+  <!-- Client -> Gateway -->
+  <path d="M234,259 H264 Q276,259 276,247 V221 Q276,209 288,209 H300" stroke="#5b6470" stroke-width="2.2" fill="none" marker-end="url(#arrow)"/>
+  <text x="266" y="288" text-anchor="middle" font-size="9.5" font-weight="600" fill="#56606c">HTTPS · X-Tenant-ID</text>
+
+  <!-- Gateway -> Master DB (control, dashed) -->
+  <path d="M860,316 H892 Q904,316 904,304 V262 Q904,250 916,250" stroke="#7E57C2" stroke-width="1.9" stroke-dasharray="6 4" fill="none" marker-end="url(#arrowMon)"/>
+  <text x="888" y="338" text-anchor="middle" font-size="9" font-weight="600" fill="#6A4399">정책 · 테넌트 load</text>
+
+  <!-- Gateway -> Tenant A Primary (write) -->
+  <path d="M860,432 H1120 Q1132,432 1132,420 V224 Q1132,212 1144,212 H1158" stroke="#2D9C6F" stroke-width="2.6" fill="none" marker-end="url(#arrowGreen)"/>
+
+  <!-- Gateway -> Tenant A Replica (read) -->
+  <path d="M860,462 H1106 Q1118,462 1118,450 V314 Q1118,302 1130,302 H1158" stroke="#0E9F8E" stroke-width="2.6" fill="none" marker-end="url(#arrowTeal)"/>
+
+  <!-- Replica fallback 은 ③ 설명(장애 시 Primary 로 대체)으로 대체 — 방향 오해 방지를 위해 화살표 생략 -->
+
+  <!-- ===== Legend ===== -->
+  <line x1="404" y1="572" x2="442" y2="572" stroke="#2D9C6F" stroke-width="2.6" marker-end="url(#arrowGreen)"/>
+  <text x="449" y="576" font-size="11" fill="#2D9C6F">write → Primary</text>
+  <line x1="590" y1="572" x2="628" y2="572" stroke="#0E9F8E" stroke-width="2.6" marker-end="url(#arrowTeal)"/>
+  <text x="635" y="576" font-size="11" fill="#0B8576">read → Replica</text>
+  <line x1="772" y1="572" x2="810" y2="572" stroke="#7E57C2" stroke-width="1.9" stroke-dasharray="6 4" marker-end="url(#arrowMon)"/>
+  <text x="817" y="576" font-size="11" fill="#6A4399">control plane</text>
+</svg>

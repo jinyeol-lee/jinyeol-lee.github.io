@@ -40,11 +40,11 @@ const selected = computed(() => props.items[selectedIdx.value])
         <SkillBadge
           v-if="item.tech"
           :name="item.tech"
-          size="lg"
+          size="md"
         />
         <span
           v-else
-          class="inline-flex items-center rounded-md border border-surface-300 px-3 py-1.5 text-sm font-medium text-surface-800 dark:border-surface-700 dark:text-surface-100"
+          class="inline-flex items-center rounded-md border border-surface-300 px-2.5 py-1 text-sm font-medium text-surface-800 dark:border-surface-700 dark:text-surface-100"
         >
           {{ item.question }}
         </span>

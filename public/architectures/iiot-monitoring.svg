@@ -133,27 +133,27 @@
   <text x="1125" y="398" text-anchor="middle" font-size="11" fill="#cdd4dc">모니터링 · 분석</text>
 
   <!-- ============ Arrows ============ -->
-  <path d="M120,282 C120,335 165,370 168,398" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
-  <path d="M275,282 C275,335 235,370 232,398" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M120,282 V366 Q120,378 132,378 H174 Q186,378 186,390 V400" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M275,282 V366 Q275,378 263,378 H221 Q209,378 209,390 V400" fill="none" stroke="#5b6470" stroke-width="2.2" marker-end="url(#arrow)"/>
 
   <!-- Edge -> TimescaleDB -->
-  <path d="M330,432 C374,424 374,255 408,240" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
-  <text x="372" y="338" text-anchor="middle" font-size="11.5" fill="#56606c" transform="rotate(-78 372 338)">데이터 적재 (write)</text>
+  <path d="M330,432 H362 Q374,432 374,420 V252 Q374,240 386,240 H410" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <text x="374" y="336" text-anchor="middle" font-size="11.5" fill="#56606c" transform="rotate(-90 374 336)">데이터 적재 (write)</text>
 
   <!-- TimescaleDB -> Grafana -->
-  <path d="M660,240 C700,252 700,300 728,312" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
+  <path d="M660,240 H688 Q700,240 700,252 V300 Q700,312 712,312 H730" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
   <text x="703" y="270" text-anchor="middle" font-size="11" fill="#c5612e">Query</text>
 
   <!-- MariaDB -> Grafana -->
-  <path d="M660,385 C700,382 700,355 728,347" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
+  <path d="M660,385 H688 Q700,385 700,373 V359 Q700,347 712,347 H730" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
   <text x="696" y="360" text-anchor="middle" font-size="11" fill="#c5612e">SQL</text>
 
   <!-- External MES -> Grafana -->
-  <path d="M660,479 C702,470 700,400 728,384" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
+  <path d="M660,479 H688 Q700,479 700,467 V396 Q700,384 712,384 H730" fill="none" stroke="#E8743B" stroke-width="2.2" marker-end="url(#arrowAccent)"/>
   <text x="703" y="438" text-anchor="middle" font-size="11" fill="#c5612e">API</text>
 
   <!-- Grafana -> User -->
-  <path d="M930,345 C972,345 985,345 1023,345" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <path d="M930,345 L1023,345" fill="none" stroke="#5b6470" stroke-width="2.4" marker-end="url(#arrow)"/>
   <text x="978" y="338" text-anchor="middle" font-size="11" fill="#56606c">대시보드 제공</text>
 
   <!-- Footer caption -->
