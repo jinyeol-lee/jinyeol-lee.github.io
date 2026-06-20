@@ -28,6 +28,9 @@ const tocItems = computed(() => {
   if (p.background) {
     list.push({ id: `background-${p.slug}`, label: '프로젝트 배경', level: 0 })
   }
+  if (p.troubleshooting?.length) {
+    list.push({ id: `troubleshoot-${p.slug}`, label: '문제 해결', level: 0 })
+  }
   if (p.media?.length) {
     list.push({ id: `arch-${p.slug}`, label: '아키텍처', level: 0 })
   }

@@ -182,7 +182,18 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
         </span>
       </template>
       <template #content>
-        <div class="flex flex-col gap-5">
+        <div
+          v-if="project.background.narrative?.length"
+          class="flex flex-col gap-4"
+        >
+          <p
+            v-for="(para, i) in project.background.narrative"
+            :key="i"
+            class="text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+            v-html="highlight(para)"
+          />
+        </div>
+        <div v-else class="flex flex-col gap-5">
           <section v-if="project.background.context">
             <div class="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-surface-700 dark:text-surface-200">
               <i class="pi pi-globe text-sm text-primary" aria-hidden="true" />
@@ -248,6 +259,57 @@ function groupMedia(media: MediaItem[]): MediaGroup[] {
             <p v-else class="text-sm leading-relaxed text-surface-700 dark:text-surface-300">
               {{ project.background.goal }}
             </p>
+          </section>
+        </div>
+      </template>
+    </Card>
+
+    <Card
+      v-if="project.troubleshooting?.length"
+      :id="`troubleshoot-${project.slug}`"
+      class="scroll-mt-24"
+    >
+      <template #title>
+        <span class="flex items-center gap-2 text-xl font-bold text-surface-900 dark:text-surface-0">
+          <i class="pi pi-wrench text-base text-primary" aria-hidden="true" />
+          문제 해결
+        </span>
+      </template>
+      <template #content>
+        <div class="flex flex-col gap-6">
+          <section
+            v-for="(step, sIdx) in project.troubleshooting"
+            :key="sIdx"
+            class="rounded-md border border-surface-200 bg-surface-50/50 px-4 py-4 dark:border-surface-800 dark:bg-surface-900/30"
+          >
+            <div class="mb-3 flex items-start gap-2.5">
+              <span
+                class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+              >
+                {{ sIdx + 1 }}
+              </span>
+              <h3 class="text-sm font-semibold leading-relaxed text-surface-900 dark:text-surface-0">
+                {{ step.title }}
+              </h3>
+            </div>
+            <div class="flex flex-col gap-3 pl-[1.875rem]">
+              <p
+                v-for="(para, pIdx) in step.body"
+                :key="pIdx"
+                class="text-sm leading-relaxed text-surface-700 dark:text-surface-300"
+                v-html="highlight(para)"
+              />
+              <div
+                v-if="step.result"
+                class="mt-1 inline-flex items-center gap-1.5 self-start rounded-md border-l-4 border-primary bg-primary-50 px-3 py-1.5 dark:bg-primary-950/30"
+              >
+                <i class="pi pi-chart-line text-xs text-primary" aria-hidden="true" />
+                <span
+                  class="text-sm font-semibold leading-relaxed text-surface-800 dark:text-surface-100"
+                  v-html="highlight(step.result)"
+                />
+              </div>
+            </div>
           </section>
         </div>
       </template>
